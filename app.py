@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ET
 import pandas as pd
 
 # Display the header
-st.header("F1 Team Mate Comparison 2024")
+st.header("F1 Drivers Comparison 2024")
 
 # API endpoint for the 2024 season
 drivers_api = "http://ergast.com/api/f1/2024/drivers"
