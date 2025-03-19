@@ -21,28 +21,24 @@ def get_standings_data():
 
         # Extract each driver from the XML and get their full name along with position
         for standing in root.findall('.//DriverStanding', namespace):  
-            position = standing.get('position')  # Extract position as an attribute
+            position = standing.get('position') 
             points = standing.get('points')
             wins = standing.get('wins')
             
-            driver = standing.find('.//Driver', namespace)  # Find the driver element within DriverStanding
+            driver = standing.find('.//Driver', namespace) 
 
             if driver is not None:
-                driver_id = driver.find('driverId', namespace).text if driver.find('driverId', namespace) is not None else 'N/A'
                 given_name = driver.find('GivenName', namespace).text if driver.find('GivenName', namespace) is not None else 'N/A'
                 family_name = driver.find('FamilyName', namespace).text if driver.find('FamilyName', namespace) is not None else 'N/A'
 
             constructor = standing.find('.//Constructor', namespace) 
 
             if constructor is not None:
-                constructor_id = driver.find('constructorId', namespace).text if driver.find('constructorId', namespace) is not None else 'N/A'
                 constructor_name = constructor.find('Name', namespace).text if constructor.find('Name', namespace) is not None else 'N/A'
                 
             standings_array.append({
-                "driver_id": driver_id, 
                 "given_name": given_name, 
                 "family_name": family_name, 
-                "constructor_id": constructor_id,
                 "constructor_name": constructor_name,
                 "position": position, 
                 "points": points, 

@@ -21,15 +21,14 @@ def get_drivers_data():
         root = ET.fromstring(drivers_response.text)
 
         # Extract each driver from the XML and get their full name
-        for driver in root.findall('.//Driver', namespace):  # Correct namespace and search path
-            driver_id = driver.get('driverId')  # Use .get('driverId') for attributes
+        for driver in root.findall('.//Driver', namespace): 
 
             given_name = driver.find('GivenName', namespace).text
             family_name = driver.find('FamilyName', namespace).text
 
             # Append the driver info to the list
-            if driver_id and given_name and family_name:  # Ensure the values exist before appending
-                drivers_array.append({"driver_id": driver_id, "given_name": given_name, "family_name": family_name})    
+            if given_name and family_name:  
+                drivers_array.append({"given_name": given_name, "family_name": family_name})    
     else:
         st.error("Failed to retrieve data. Please try again later.")
 
