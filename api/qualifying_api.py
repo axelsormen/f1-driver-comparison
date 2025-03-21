@@ -33,9 +33,9 @@ def get_qualifying_data():
                 # Extract qualifying results
                 qualifying_results = race.findall('.//QualifyingResult', namespace)
 
-                position = 0
                 for result in qualifying_results:
-                    position += 1
+                    position = result.get('position') 
+
                     driver = result.find('.//Driver', namespace)
 
                     if driver is not None:

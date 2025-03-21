@@ -33,9 +33,11 @@ def get_results_data():
                 # Extract results
                 results = race.findall('.//Result', namespace)
 
-                position = 0
                 for result in results:
-                    position += 1
+                    position = result.get('position') 
+                    points = result.get('points') 
+                    status = result.find('.//Status', namespace)
+
                     driver = result.find('.//Driver', namespace)
 
                     if driver is not None:
@@ -52,6 +54,8 @@ def get_results_data():
                         "family_name": family_name,
                         "constructor_name": constructor_name,
                         "position": position,
+                        "points": points,
+                        "status": status,
                         "season": season,
                         "round": round_number,
                         "race_name": race_name,
