@@ -75,7 +75,7 @@ def main():
             st.header("Standings")
             
             # Increase the table size by adjusting the width and height
-            st.dataframe(df.set_index(df.columns[0]), width=500, )
+            st.dataframe(df.set_index(df.columns[0]), width=500)
 
         ######### GP Results #########
 
