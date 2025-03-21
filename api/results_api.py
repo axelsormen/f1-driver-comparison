@@ -1,5 +1,4 @@
 import requests
-import streamlit as st
 import xml.etree.ElementTree as ET
 
 def get_results_data():

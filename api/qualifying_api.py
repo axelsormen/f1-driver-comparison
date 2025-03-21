@@ -1,6 +1,4 @@
 import requests
-import pandas as pd
-import streamlit as st
 import xml.etree.ElementTree as ET
 from functions.time_converter import time_to_milliseconds 
 

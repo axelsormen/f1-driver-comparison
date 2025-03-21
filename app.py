@@ -2,7 +2,7 @@
 
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
+import os
 import altair as alt
 from api.drivers_api import get_drivers_data
 from api.results_api import get_results_data 
@@ -11,6 +11,15 @@ from api.qualifying_api import get_qualifying_data
 from functions.time_converter import time_to_milliseconds 
 
 st.set_page_config(layout="wide")
+
+# Defines the file path to the CSS file
+css_path = os.path.join("css.html") 
+
+# Opens the CSS file in read mode and store its content
+with open(css_path, "r") as f: 
+    css_content = f.read() # Reads the content of the CSS file
+
+st.markdown(f"{css_content}", unsafe_allow_html=True)
 
 # Display the header
 st.header("F1 Drivers Comparison 2024")
@@ -128,7 +137,7 @@ def main():
             alt.Y('Position').scale(zero=False),
             color='Driver',
             tooltip=['Round', 'Grand Prix', 'Driver', 'Position', 'Status']
-        ).interactive().properties(width=1200, height=500)
+        ).interactive().properties(width=1200, height=500).configure(background='#ffffff')
 
         st.altair_chart(results_chart)
 
@@ -250,7 +259,7 @@ def main():
             alt.Y('Position').scale(zero=False),
             color='Driver',
             tooltip=['Round', 'Grand Prix', 'Driver', 'Position']
-        ).interactive().properties(width=1200, height=500)
+        ).interactive().properties(width=1200, height=500).configure(background='#ffffff')
 
         st.altair_chart(qualifying_chart)
 
@@ -274,7 +283,7 @@ def main():
             alt.Y('Difference (ms)').scale(zero=False),
             color='Driver',
             tooltip=['Round', 'Grand Prix', 'Driver', 'Q1 Lap Time', "Q1 Best Lap Time", "Difference (ms)"]
-        ).interactive().properties(width=1200, height=500)
+        ).interactive().properties(width=1200, height=500).configure(background='#ffffff')
 
         st.altair_chart(q1_chart)
 
@@ -298,7 +307,7 @@ def main():
             alt.Y('Difference (ms)').scale(zero=False),
             color='Driver',
             tooltip=['Round', 'Grand Prix', 'Driver', 'Q2 Lap Time', "Q2 Best Lap Time",  "Difference (ms)"]
-        ).interactive().properties(width=1200, height=500)
+        ).interactive().properties(width=1200, height=500).configure(background='#ffffff')
 
         st.altair_chart(q2_chart)
 
@@ -322,7 +331,7 @@ def main():
             alt.Y('Difference (ms)').scale(zero=False),
             color='Driver',
             tooltip=['Round', 'Grand Prix', 'Driver', 'Q3 Lap Time', "Q3 Best Lap Time", "Difference (ms)"]
-        ).interactive().properties(width=1200, height=500)
+        ).interactive().properties(width=1200, height=500).configure(background='#ffffff')
 
         st.altair_chart(q3_chart)
 
