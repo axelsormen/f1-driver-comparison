@@ -97,13 +97,13 @@ def get_qualifying_data():
         round_number = entry["round"]
         
         if str(round_number) in fastest_q1_dict:
-            entry["best_q1_time"] = fastest_q1_dict[str(round_number)]["fastest_q1"] 
+            entry["fastest_q1_time"] = fastest_q1_dict[str(round_number)]["fastest_q1"] 
             if entry["q1_ms"] == float('inf'):
-                entry["difference_best_q1_time"] = "N/A" 
+                entry["difference_fastest_q1_time"] = "N/A" 
             else:
-                entry["difference_best_q1_time"] = entry["q1_ms"] - fastest_q1_dict[str(round_number)]["q1_milliseconds"] 
+                entry["difference_fastest_q1_time"] = entry["q1_ms"] - fastest_q1_dict[str(round_number)]["q1_milliseconds"] 
         else:
-            entry["difference_best_q1_time"] = "N/A" 
+            entry["difference_fastest_q1_time"] = "N/A" 
 
     ####### Q2 difference #######
             
@@ -125,13 +125,13 @@ def get_qualifying_data():
         round_number = entry["round"]
         
         if str(round_number) in fastest_q2_dict:
-            entry["best_q2_time"] = fastest_q2_dict[str(round_number)]["fastest_q2"] 
+            entry["fastest_q2_time"] = fastest_q2_dict[str(round_number)]["fastest_q2"] 
             if entry["q2_ms"] == float('inf'):
-                entry["difference_best_q2_time"] = "N/A" 
+                entry["difference_fastest_q2_time"] = "N/A" 
             else:
-                entry["difference_best_q2_time"] = entry["q2_ms"] - fastest_q2_dict[str(round_number)]["q2_milliseconds"]
+                entry["difference_fastest_q2_time"] = entry["q2_ms"] - fastest_q2_dict[str(round_number)]["q2_milliseconds"]
         else:
-            entry["difference_best_q2_time"] = "N/A" 
+            entry["difference_fastest_q2_time"] = "N/A" 
 
     ####### Q3 difference #######
             
@@ -153,14 +153,12 @@ def get_qualifying_data():
         round_number = entry["round"]
         
         if str(round_number) in fastest_q3_dict:
-            entry["best_q3_time"] = fastest_q3_dict[str(round_number)]["fastest_q3"] 
+            entry["fastest_q3_time"] = fastest_q3_dict[str(round_number)]["fastest_q3"] 
             if entry["q3_ms"] == float('inf'):
-                entry["difference_best_q3_time"] = "N/A" 
+                entry["difference_fastest_q3_time"] = "N/A" 
             else:
-                entry["difference_best_q3_time"] = entry["q3_ms"] - fastest_q3_dict[str(round_number)]["q3_milliseconds"]
+                entry["difference_fastest_q3_time"] = entry["q3_ms"] - fastest_q3_dict[str(round_number)]["q3_milliseconds"]
         else:
-            entry["difference_best_q3_time"] = "N/A" 
-
-    print(qualifying_array)
+            entry["difference_fastest_q3_time"] = "N/A" 
 
     return qualifying_array

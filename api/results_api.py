@@ -3,6 +3,7 @@ import xml.etree.ElementTree as ET
 
 def get_results_data():
     results_array = []
+    driver_points = {}  # Dictionary to store the cumulative points for each driver
 
     # Loop through all races (for example, 24 races for the season)
     for i in range(1, 25):  # Assuming there are 24 rounds for the season
@@ -36,7 +37,7 @@ def get_results_data():
                     status = result.find('Status', namespace).text if result.find('Status', namespace) is not None else 'N/A'
                     position = result.get('position') 
 
-                    points = result.get('points') 
+                    points = float(result.get('points', 0))  # Ensure points are treated as numbers
                     driver = result.find('.//Driver', namespace)
 
                     if driver is not None:
@@ -47,13 +48,20 @@ def get_results_data():
                     if constructor is not None:
                         constructor_name = constructor.find('Name', namespace).text if constructor.find('Name', namespace) is not None else 'N/A'
 
-                    # Append the collected data to the qualifying_array
+                    # Update the total points for the driver
+                    driver_key = f"{given_name} {family_name}"
+                    if driver_key not in driver_points:
+                        driver_points[driver_key] = 0  # Initialize if driver not in dictionary
+                    driver_points[driver_key] += points  # Add the points for the current race
+
+                    # Append the collected data to the results_array with total_points
                     results_array.append({
                         "given_name": given_name,
                         "family_name": family_name,
                         "constructor_name": constructor_name,
                         "position": position,
                         "points": points,
+                        "total_points": driver_points[driver_key],  # Add the total points so far
                         "status": status,
                         "season": season,
                         "round": round_number,
