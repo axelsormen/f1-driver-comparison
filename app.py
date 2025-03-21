@@ -136,8 +136,17 @@ def main():
                 if selected == full_name: 
                     position = qualifying_info["position"]
                     q1 = qualifying_info["q1"]
+                    q1_ms = qualifying_info["q1_ms"]
+                    best_q1_time = qualifying_info["best_q1_time"]
+                    difference_best_q1_time = qualifying_info["difference_best_q1_time"]
                     q2 = qualifying_info["q2"]
+                    q2_ms = qualifying_info["q2_ms"]
+                    best_q2_time = qualifying_info["best_q2_time"]
+                    difference_best_q2_time = qualifying_info["difference_best_q2_time"]
                     q3 = qualifying_info["q3"]
+                    q3_ms = qualifying_info["q3_ms"]
+                    best_q3_time = qualifying_info["best_q3_time"]
+                    difference_best_q3_time = qualifying_info["difference_best_q3_time"]
                     season = qualifying_info["season"]
                     round = qualifying_info["round"]
                     race_name = qualifying_info["race_name"]
@@ -149,20 +158,32 @@ def main():
                                             "Constructor": constructor, 
                                             "position": position,
                                             "q1": q1, 
+                                            "q1_ms": q1_ms,
+                                            "best_q1_time": best_q1_time,
+                                            "difference_best_q1_time": difference_best_q1_time,
                                             "q2": q2,
+                                            "q2_ms": q2_ms,
+                                            "best_q2_time": best_q2_time,
+                                            "difference_best_q2_time": difference_best_q2_time,
                                             "q3": q3, 
+                                            "best_q3_time": best_q3_time,
+                                            "difference_best_q3_time": difference_best_q3_time,
+                                            "q3_ms": q3_ms,
                                             "season": season,
                                             "round": round, 
                                             "race_name": race_name, 
                                             "circuit_name": circuit_name,
                                             "date": date})
         qualifying_round_array = []
-        q1_lap_time_milliseconds_array = []
-        q2_lap_time_milliseconds_array = []
-        q3_lap_time_milliseconds_array = []
         q1_lap_time_array = []
+        best_q1_time_array = []
+        difference_best_q1_time_array = []
         q2_lap_time_array = []
+        best_q2_time_array = []
+        difference_best_q2_time_array = []
         q3_lap_time_array = []
+        best_q3_time_array = []
+        difference_best_q3_time_array = []
         qualifying_driver_array = []
         qualifying_race_array = []
         qualiying_array = []
@@ -170,23 +191,32 @@ def main():
         for round in selected_qualifying_info:
             qualifying_round_array.append(int(round["round"]))
 
-        for lap_time_milliseconds in selected_qualifying_info:
-            q1_lap_time_milliseconds_array.append(time_to_milliseconds(lap_time_milliseconds["q1"]))
+        for q1_lap_time in selected_qualifying_info:
+            q1_lap_time_array.append(q1_lap_time["q1"])
 
-        for lap_time_milliseconds in selected_qualifying_info:
-            q2_lap_time_milliseconds_array.append(time_to_milliseconds(lap_time_milliseconds["q2"]))
+        for q1_best in selected_qualifying_info:
+            best_q1_time_array.append(q1_best["best_q1_time"])
 
-        for lap_time_milliseconds in selected_qualifying_info:
-            q3_lap_time_milliseconds_array.append(time_to_milliseconds(lap_time_milliseconds["q3"]))
+        for q1_difference in selected_qualifying_info:
+            difference_best_q1_time_array.append(q1_difference["difference_best_q1_time"])
 
-        for lap_time in selected_qualifying_info:
-            q1_lap_time_array.append(lap_time["q1"])
+        for q2_lap_time in selected_qualifying_info:
+            q2_lap_time_array.append(q2_lap_time["q2"])
 
-        for lap_time in selected_qualifying_info:
-            q2_lap_time_array.append(lap_time["q2"])
+        for q2_best in selected_qualifying_info:
+            best_q2_time_array.append(q2_best["best_q2_time"])
 
-        for lap_time in selected_qualifying_info:
-            q3_lap_time_array.append(lap_time["q3"])
+        for q2_difference in selected_qualifying_info:
+            difference_best_q2_time_array.append(q2_difference["difference_best_q2_time"])
+
+        for q3_lap_time in selected_qualifying_info:
+            q3_lap_time_array.append(q3_lap_time["q3"])
+
+        for q3_best in selected_qualifying_info:
+            best_q3_time_array.append(q3_best["best_q3_time"])
+
+        for q3_difference in selected_qualifying_info:
+            difference_best_q3_time_array.append(q3_difference["difference_best_q3_time"])
 
         for driver in selected_qualifying_info:
             qualifying_driver_array.append(driver["Driver"])
@@ -219,69 +249,72 @@ def main():
 
         ######### Q1 #########
 
-        st.header("Best Qualifying Times per Driver (Q1)")
+        st.header("Difference to best Q1 lap time")
 
         q1_data = pd.DataFrame(
             {
                 "Round": qualifying_round_array,
-                "Q1 Lap Time (ms)": q1_lap_time_milliseconds_array,
+                "Difference (ms)": difference_best_q1_time_array,
                 "Driver": qualifying_driver_array,
                 "Q1 Lap Time": q1_lap_time_array,
+                "Q1 Best Lap Time": best_q1_time_array,
                 "Grand Prix": qualifying_race_array
             }
         )
 
         q1_chart = alt.Chart(q1_data).mark_line().encode(
             alt.X('Round', sort='ascending').scale(zero=False),
-            alt.Y('Q1 Lap Time (ms)').scale(zero=False),
+            alt.Y('Difference (ms)').scale(zero=False),
             color='Driver',
-            tooltip=['Round', 'Grand Prix', 'Driver', 'Q1 Lap Time']
+            tooltip=['Round', 'Grand Prix', 'Driver', 'Q1 Lap Time', "Q1 Best Lap Time", "Difference (ms)"]
         ).interactive().properties(width=1200, height=500)
 
         st.altair_chart(q1_chart)
 
         ######### Q2 #########
 
-        st.header("Best Qualifying Times per Driver (Q2)")
+        st.header("Difference to best Q2 lap time")
 
         q2_data = pd.DataFrame(
             {
                 "Round": qualifying_round_array,
-                "Q2 Lap Time (ms)": q2_lap_time_milliseconds_array,
+                "Difference (ms)": difference_best_q2_time_array,
                 "Driver": qualifying_driver_array,
                 "Q2 Lap Time": q2_lap_time_array,
+                "Q2 Best Lap Time": best_q2_time_array,
                 "Grand Prix": qualifying_race_array
             }
         )
 
         q2_chart = alt.Chart(q2_data).mark_line().encode(
             alt.X('Round', sort='ascending').scale(zero=False),
-            alt.Y('Q2 Lap Time (ms)').scale(zero=False),
+            alt.Y('Difference (ms)').scale(zero=False),
             color='Driver',
-            tooltip=['Round', 'Grand Prix', 'Driver', 'Q2 Lap Time']
+            tooltip=['Round', 'Grand Prix', 'Driver', 'Q2 Lap Time', "Q2 Best Lap Time",  "Difference (ms)"]
         ).interactive().properties(width=1200, height=500)
 
         st.altair_chart(q2_chart)
 
         ######### Q3 #########
 
-        st.header("Best Qualifying Times per Driver (Q3)")
+        st.header("Difference to best Q3 lap time")
 
         q3_data = pd.DataFrame(
             {
                 "Round": qualifying_round_array,
-                "Q3 Lap Time (ms)": q3_lap_time_milliseconds_array,
+                "Difference (ms)": difference_best_q3_time_array,
                 "Driver": qualifying_driver_array,
                 "Q3 Lap Time": q3_lap_time_array,
+                "Q3 Best Lap Time": best_q3_time_array,
                 "Grand Prix": qualifying_race_array
             }
         )
 
         q3_chart = alt.Chart(q3_data).mark_line().encode(
             alt.X('Round', sort='ascending').scale(zero=False),
-            alt.Y('Q3 Lap Time (ms)').scale(zero=False),
+            alt.Y('Difference (ms)').scale(zero=False),
             color='Driver',
-            tooltip=['Round', 'Grand Prix', 'Driver', 'Q3 Lap Time']
+            tooltip=['Round', 'Grand Prix', 'Driver', 'Q3 Lap Time', "Q3 Best Lap Time", "Difference (ms)"]
         ).interactive().properties(width=1200, height=500)
 
         st.altair_chart(q3_chart)
