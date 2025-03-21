@@ -34,8 +34,8 @@ def main():
 
     selected_drivers = st.multiselect(
         'Select drivers to compare:', 
-        [f"{driver['given_name']} {driver['family_name']}" for driver in st.session_state.drivers_array]
-    )  
+        [f"{driver['given_name']} {driver['family_name']}" for driver in sorted(st.session_state.drivers_array, key=lambda x: x['given_name'])]
+    )
 
     if selected_drivers:
 
@@ -72,6 +72,7 @@ def main():
                 full_name = f"{results_info['given_name']} {results_info['family_name']}".strip()
                 if selected == full_name: 
                     position = results_info["position"]
+                    status = results_info["status"]
                     season = results_info["season"]
                     round = results_info["round"]
                     race_name = results_info["race_name"]
@@ -82,6 +83,7 @@ def main():
                     selected_results_info.append({"Driver": selected, 
                                             "Constructor": constructor, 
                                             "position": position,
+                                            "status": status,
                                             "season": season,
                                             "round": round, 
                                             "race_name": race_name, 
@@ -89,12 +91,16 @@ def main():
                                             "date": date})
                     
         results_round_array = []
+        results_status_array = []
         results_driver_array = []
         results_race_array = []
         results_array = []
 
         for round in selected_results_info:
             results_round_array.append(int(round["round"]))
+
+        for status in selected_results_info:
+            results_status_array.append(status["status"])
 
         for driver in selected_results_info:
             results_driver_array.append(driver["Driver"])
@@ -112,6 +118,7 @@ def main():
                 "Round": results_round_array,
                 "Position": results_array,
                 "Driver": results_driver_array,
+                "Status": results_status_array,
                 "Grand Prix": results_race_array
             }
         )
@@ -120,7 +127,7 @@ def main():
             alt.X('Round', sort='ascending').scale(zero=False),
             alt.Y('Position').scale(zero=False),
             color='Driver',
-            tooltip=['Round', 'Grand Prix', 'Driver', 'Position']
+            tooltip=['Round', 'Grand Prix', 'Driver', 'Position', 'Status']
         ).interactive().properties(width=1200, height=500)
 
         st.altair_chart(results_chart)

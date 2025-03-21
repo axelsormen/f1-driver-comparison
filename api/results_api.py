@@ -34,10 +34,10 @@ def get_results_data():
                 results = race.findall('.//Result', namespace)
 
                 for result in results:
+                    status = result.find('Status', namespace).text if result.find('Status', namespace) is not None else 'N/A'
                     position = result.get('position') 
-                    points = result.get('points') 
-                    status = result.find('.//Status', namespace)
 
+                    points = result.get('points') 
                     driver = result.find('.//Driver', namespace)
 
                     if driver is not None:
