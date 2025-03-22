@@ -122,6 +122,7 @@ def main():
                 results_round_array = []
                 results_status_array = []
                 results_driver_array = []
+                results_constructor_array = []
                 results_race_array = []
                 results_points_array = []
                 results_total_points_array = []
@@ -135,6 +136,9 @@ def main():
 
                 for driver in selected_results_info:
                     results_driver_array.append(driver["driver"])
+
+                for constructor in selected_results_info:
+                    results_constructor_array.append(constructor["constructor"])
 
                 for race in selected_results_info:
                     results_race_array.append(race["race_name"])
@@ -155,6 +159,7 @@ def main():
                         "Round": results_round_array,
                         "Position": results_array,
                         "Driver": results_driver_array,
+                        "Constructor": results_constructor_array,
                         "Status": results_status_array,
                         "Grand Prix": results_race_array,
                         "Points": results_points_array
@@ -165,7 +170,7 @@ def main():
                     alt.X('Round', sort='ascending').scale(zero=False),
                     alt.Y('Position').scale(zero=False),
                     color='Driver',
-                    tooltip=['Round', 'Grand Prix', 'Driver', 'Position', 'Points', 'Status']
+                    tooltip=['Round', 'Grand Prix', 'Driver', 'Constructor', 'Position', 'Points', 'Status']
                 ).interactive(
                 ).properties(
                     height=600
@@ -187,17 +192,18 @@ def main():
                 total_points_data = pd.DataFrame(
                     {
                         "Round": results_round_array,
-                        "Points": results_total_points_array,
+                        "Total Points": results_total_points_array,
                         "Driver": results_driver_array,
+                        "Constructor": results_constructor_array,
                         "Grand Prix": results_race_array
                     }
                 )
 
                 total_points_chart = alt.Chart(total_points_data).mark_line(size=5).encode(
                     alt.X('Round', sort='ascending').scale(zero=False),
-                    alt.Y('Points').scale(zero=False),
+                    alt.Y('Total Points').scale(zero=False),
                     color='Driver',
-                    tooltip=['Round', 'Grand Prix', 'Driver', 'Points']
+                    tooltip=['Round', 'Grand Prix', 'Driver', 'Constructor','Total Points']
                 ).interactive(
                 ).properties(
                     height=600
@@ -273,6 +279,7 @@ def main():
                 fastest_q3_time_array = []
                 difference_fastest_q3_time_array = []
                 qualifying_driver_array = []
+                qualifying_constructor_array = []
                 qualifying_race_array = []
                 qualiying_array = []
 
@@ -309,6 +316,9 @@ def main():
                 for driver in selected_qualifying_info:
                     qualifying_driver_array.append(driver["driver"])
 
+                for constructor in selected_qualifying_info:
+                    qualifying_constructor_array.append(constructor["constructor"])
+
                 for race in selected_qualifying_info:
                     qualifying_race_array.append(race["race_name"])
 
@@ -322,6 +332,7 @@ def main():
                         "Round": qualifying_round_array,
                         "Position": qualiying_array,
                         "Driver": qualifying_driver_array,
+                        "Constructor": qualifying_constructor_array,
                         "Grand Prix": qualifying_race_array
                     }
                 )
@@ -330,7 +341,7 @@ def main():
                     alt.X('Round', sort='ascending').scale(zero=False),
                     alt.Y('Position').scale(zero=False),
                     color='Driver',
-                    tooltip=['Round', 'Grand Prix', 'Driver', 'Position']
+                    tooltip=['Round', 'Grand Prix', 'Driver', 'Constructor', 'Position']
                 ).interactive(
                 ).properties(
                     height=600
@@ -354,6 +365,7 @@ def main():
                         "Round": qualifying_round_array,
                         "Difference (sec)": difference_fastest_q1_time_array,
                         "Driver": qualifying_driver_array,
+                        "Constructor": qualifying_constructor_array,
                         "Q1 Lap Time": q1_lap_time_array,
                         "Fastest Q1 Lap Time": fastest_q1_time_array,
                         "Grand Prix": qualifying_race_array
@@ -364,7 +376,7 @@ def main():
                     alt.X('Round', sort='ascending').scale(zero=False),
                     alt.Y('Difference (sec)').scale(zero=False),
                     color='Driver',
-                    tooltip=['Round', 'Grand Prix', 'Driver', 'Q1 Lap Time', "Fastest Q1 Lap Time", "Difference (sec)"]
+                    tooltip=['Round', 'Grand Prix', 'Driver', 'Constructor', 'Q1 Lap Time', "Fastest Q1 Lap Time", "Difference (sec)"]
                 ).interactive(
                 ).properties(
                     height=600
@@ -388,6 +400,7 @@ def main():
                         "Round": qualifying_round_array,
                         "Difference (sec)": difference_fastest_q2_time_array,
                         "Driver": qualifying_driver_array,
+                        "Constructor": qualifying_constructor_array,
                         "Q2 Lap Time": q2_lap_time_array,
                         "Fastest Q2 Lap Time": fastest_q2_time_array,
                         "Grand Prix": qualifying_race_array
@@ -398,7 +411,7 @@ def main():
                     alt.X('Round', sort='ascending').scale(zero=False),
                     alt.Y('Difference (sec)').scale(zero=False),
                     color='Driver',
-                    tooltip=['Round', 'Grand Prix', 'Driver', 'Q2 Lap Time', "Fastest Q2 Lap Time",  "Difference (sec)"]
+                    tooltip=['Round', 'Grand Prix', 'Driver', 'Constructor', 'Q2 Lap Time', "Fastest Q2 Lap Time",  "Difference (sec)"]
                 ).interactive(
                 ).properties(
                     height=600
@@ -422,6 +435,7 @@ def main():
                         "Round": qualifying_round_array,
                         "Difference (sec)": difference_fastest_q3_time_array,
                         "Driver": qualifying_driver_array,
+                        "Constructor": qualifying_constructor_array,
                         "Q3 Lap Time": q3_lap_time_array,
                         "Fastest Q3 Lap Time": fastest_q3_time_array,
                         "Grand Prix": qualifying_race_array
@@ -432,7 +446,7 @@ def main():
                     alt.X('Round', sort='ascending').scale(zero=False),
                     alt.Y('Difference (sec)').scale(zero=False),
                     color='Driver',
-                    tooltip=['Round', 'Grand Prix', 'Driver', 'Q3 Lap Time', "Fastest Q3 Lap Time", "Difference (sec)"]
+                    tooltip=['Round', 'Grand Prix', 'Driver', 'Constructor', 'Q3 Lap Time', "Fastest Q3 Lap Time", "Difference (sec)"]
                 ).interactive(
                 ).properties(
                     height=600
@@ -493,6 +507,7 @@ def main():
                 sprint_results_round_array = []
                 sprint_results_status_array = []
                 sprint_results_driver_array = []
+                sprint_results_constructor_array = []
                 sprint_results_race_array = []
                 sprint_results_points_array = []
                 sprint_results_array = []
@@ -505,6 +520,9 @@ def main():
 
                 for driver in selected_sprint_info:
                     sprint_results_driver_array.append(driver["driver"])
+
+                for constructor in selected_sprint_info:
+                    sprint_results_constructor_array.append(constructor["constructor"])
 
                 for sprint_race in selected_sprint_info:
                     sprint_results_race_array.append(sprint_race["race_name"])
@@ -525,6 +543,7 @@ def main():
                         "Round": sprint_results_round_array,
                         "Position": sprint_results_array,
                         "Driver": sprint_results_driver_array,
+                        "Constructor": sprint_results_constructor_array,
                         "Status": sprint_results_status_array,
                         "Grand Prix": sprint_results_race_array,
                         "Points": sprint_results_points_array
@@ -537,7 +556,7 @@ def main():
                     alt.X('Round', sort='ascending',axis=alt.Axis(values=unique_rounds)).scale(zero=False),
                     alt.Y('Position').scale(zero=False),
                     color='Driver',
-                    tooltip=['Round', 'Grand Prix', 'Driver', 'Position', 'Points', 'Status']
+                    tooltip=['Round', 'Grand Prix', 'Driver', 'Constructor', 'Position', 'Points', 'Status']
                 ).interactive(
                 ).properties(
                     height=600
