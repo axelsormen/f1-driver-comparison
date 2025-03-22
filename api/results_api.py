@@ -1,5 +1,4 @@
 import requests
-import streamlit as st
 import xml.etree.ElementTree as ET
 
 def get_results_data():
@@ -38,7 +37,7 @@ def get_results_data():
 
                 for result in results:
                     status = result.find('Status', namespace).text if result.find('Status', namespace) is not None else None
-                    position = result.get('position') 
+                    position = result.get('position') if result.get('position') is not None else None
 
                     points = float(result.get('points', 0))  # Ensure points are treated as numbers
                     driver = result.find('.//Driver', namespace)
@@ -94,7 +93,7 @@ def get_results_data():
 
                 for sprint_result in sprint_results:
                     sprint_status = sprint_result.find('Status', namespace).text if sprint_result.find('Status', namespace) is not None else None
-                    sprint_position = sprint_result.get('position') 
+                    sprint_position = sprint_result.get('position') if sprint_result.get('position') is not None else None
 
                     sprint_points = float(sprint_result.get('points', 0))  # Ensure points are treated as numbers
                     driver = sprint_result.find('.//Driver', namespace)
@@ -120,5 +119,5 @@ def get_results_data():
         else:
             print(f"Failed to retrieve data for round {i}.")
             continue  # Continue to next round if request failed
-    st.write(results_array)
+    
     return results_array
