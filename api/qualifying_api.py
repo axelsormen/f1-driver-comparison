@@ -1,6 +1,6 @@
 import requests
 import xml.etree.ElementTree as ET
-from functions.time_converter import time_to_milliseconds 
+from functions.time_converter import time_to_seconds 
 
 def get_qualifying_data():
     qualifying_array = []
@@ -51,9 +51,9 @@ def get_qualifying_data():
                     q2 = result.find('.//Q2', namespace).text if result.find('.//Q2', namespace) is not None else 'N/A'
                     q3 = result.find('.//Q3', namespace).text if result.find('.//Q3', namespace) is not None else 'N/A'
 
-                    q1_ms = time_to_milliseconds(q1)
-                    q2_ms = time_to_milliseconds(q2)
-                    q3_ms = time_to_milliseconds(q3)
+                    q1_sec = time_to_seconds(q1)
+                    q2_sec = time_to_seconds(q2)
+                    q3_sec = time_to_seconds(q3)
 
                     # Append the collected data to the qualifying_array
                     qualifying_array.append({
@@ -62,11 +62,11 @@ def get_qualifying_data():
                         "constructor_name": constructor_name,
                         "position": position,
                         "q1": q1,
-                        "q1_ms": q1_ms,
+                        "q1_sec": q1_sec,
                         "q2": q2,
-                        "q2_ms": q2_ms,
+                        "q2_sec": q2_sec,
                         "q3": q3,
-                        "q3_ms": q3_ms,
+                        "q3_sec": q3_sec,
                         "season": season,
                         "round": round_number,
                         "race_name": race_name,
@@ -84,13 +84,13 @@ def get_qualifying_data():
     for entry in qualifying_array:
         round_number = entry["round"]
         q1_time = entry["q1"]
-        q1_milliseconds = entry["q1_ms"]
+        q1_seconds = entry["q1_sec"]
 
-        if q1_milliseconds != float('inf'):
-            if round_number not in fastest_q1_dict or q1_milliseconds < fastest_q1_dict[round_number]["q1_milliseconds"]:
+        if q1_seconds != float('inf'):
+            if round_number not in fastest_q1_dict or q1_seconds < fastest_q1_dict[round_number]["q1_seconds"]:
                 fastest_q1_dict[round_number] = {
                     "fastest_q1": q1_time,
-                    "q1_milliseconds": q1_milliseconds
+                    "q1_seconds": q1_seconds
                 }
 
     for entry in qualifying_array:
@@ -98,10 +98,10 @@ def get_qualifying_data():
         
         if str(round_number) in fastest_q1_dict:
             entry["fastest_q1_time"] = fastest_q1_dict[str(round_number)]["fastest_q1"] 
-            if entry["q1_ms"] == float('inf'):
+            if entry["q1_sec"] == float('inf'):
                 entry["difference_fastest_q1_time"] = "N/A" 
             else:
-                entry["difference_fastest_q1_time"] = entry["q1_ms"] - fastest_q1_dict[str(round_number)]["q1_milliseconds"] 
+                entry["difference_fastest_q1_time"] = round(entry["q1_sec"] - fastest_q1_dict[str(round_number)]["q1_seconds"],3)
         else:
             entry["difference_fastest_q1_time"] = "N/A" 
 
@@ -112,13 +112,13 @@ def get_qualifying_data():
     for entry in qualifying_array:
         round_number = entry["round"]
         q2_time = entry["q2"]
-        q2_milliseconds = entry["q2_ms"]
+        q2_seconds = entry["q2_sec"]
 
-        if q2_milliseconds != float('inf'):
-            if round_number not in fastest_q2_dict or q2_milliseconds < fastest_q2_dict[round_number]["q2_milliseconds"]:
+        if q2_seconds != float('inf'):
+            if round_number not in fastest_q2_dict or q2_seconds < fastest_q2_dict[round_number]["q2_seconds"]:
                 fastest_q2_dict[round_number] = {
                     "fastest_q2": q2_time,
-                    "q2_milliseconds": q2_milliseconds
+                    "q2_seconds": q2_seconds
                 }
 
     for entry in qualifying_array:
@@ -126,10 +126,10 @@ def get_qualifying_data():
         
         if str(round_number) in fastest_q2_dict:
             entry["fastest_q2_time"] = fastest_q2_dict[str(round_number)]["fastest_q2"] 
-            if entry["q2_ms"] == float('inf'):
+            if entry["q2_sec"] == float('inf'):
                 entry["difference_fastest_q2_time"] = "N/A" 
             else:
-                entry["difference_fastest_q2_time"] = entry["q2_ms"] - fastest_q2_dict[str(round_number)]["q2_milliseconds"]
+                entry["difference_fastest_q2_time"] = entry["q2_sec"] - fastest_q2_dict[str(round_number)]["q2_seconds"]
         else:
             entry["difference_fastest_q2_time"] = "N/A" 
 
@@ -140,13 +140,13 @@ def get_qualifying_data():
     for entry in qualifying_array:
         round_number = entry["round"]
         q3_time = entry["q3"]
-        q3_milliseconds = entry["q3_ms"]
+        q3_seconds = entry["q3_sec"]
 
-        if q3_milliseconds != float('inf'):
-            if round_number not in fastest_q3_dict or q3_milliseconds < fastest_q3_dict[round_number]["q3_milliseconds"]:
+        if q3_seconds != float('inf'):
+            if round_number not in fastest_q3_dict or q3_seconds < fastest_q3_dict[round_number]["q3_seconds"]:
                 fastest_q3_dict[round_number] = {
                     "fastest_q3": q3_time,
-                    "q3_milliseconds": q3_milliseconds
+                    "q3_seconds": q3_seconds
                 }
 
     for entry in qualifying_array:
@@ -154,10 +154,10 @@ def get_qualifying_data():
         
         if str(round_number) in fastest_q3_dict:
             entry["fastest_q3_time"] = fastest_q3_dict[str(round_number)]["fastest_q3"] 
-            if entry["q3_ms"] == float('inf'):
+            if entry["q3_sec"] == float('inf'):
                 entry["difference_fastest_q3_time"] = "N/A" 
             else:
-                entry["difference_fastest_q3_time"] = entry["q3_ms"] - fastest_q3_dict[str(round_number)]["q3_milliseconds"]
+                entry["difference_fastest_q3_time"] = entry["q3_sec"] - fastest_q3_dict[str(round_number)]["q3_seconds"]
         else:
             entry["difference_fastest_q3_time"] = "N/A" 
 

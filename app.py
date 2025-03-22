@@ -8,7 +8,6 @@ from api.drivers_api import get_drivers_data
 from api.results_api import get_results_data 
 from api.standings_api import get_standings_data 
 from api.qualifying_api import get_qualifying_data 
-from functions.time_converter import time_to_milliseconds 
 
 st.set_page_config(layout="wide")
 
@@ -43,7 +42,8 @@ def main():
 
     selected_drivers = st.multiselect(
         'Select drivers to compare:', 
-        [f"{driver['given_name']} {driver['family_name']}" for driver in sorted(st.session_state.drivers_array, key=lambda x: x['given_name'])]
+        [f"{driver['given_name']} {driver['family_name']}" for driver in sorted(st.session_state.drivers_array, key=lambda x: x['given_name'])],
+        placeholder="Choose a driver"
     )
 
     if selected_drivers:
@@ -153,7 +153,6 @@ def main():
             tooltip=['Round', 'Grand Prix', 'Driver', 'Position', 'Status']
         ).interactive(
         ).properties(
-            width=1250, 
             height=600
         ).configure(
             background='#ffffff'
@@ -164,7 +163,7 @@ def main():
             fontSize=20  
         )
 
-        st.altair_chart(results_chart)
+        st.altair_chart(results_chart, use_container_width=True)
 
         ######### GP Points Development #########
 
@@ -186,7 +185,6 @@ def main():
             tooltip=['Round', 'Grand Prix', 'Driver', 'Points']
         ).interactive(
         ).properties(
-            width=1250, 
             height=600
         ).configure(
             background='#ffffff'
@@ -197,7 +195,7 @@ def main():
             fontSize=20  
         )
 
-        st.altair_chart(total_points_chart)
+        st.altair_chart(total_points_chart, use_container_width=True)
 
         ######### Qualifying Results #########
 
@@ -210,15 +208,15 @@ def main():
                 if selected == full_name: 
                     position = qualifying_info["position"]
                     q1 = qualifying_info["q1"]
-                    q1_ms = qualifying_info["q1_ms"]
+                    q1_sec = qualifying_info["q1_sec"]
                     fastest_q1_time = qualifying_info["fastest_q1_time"]
                     difference_fastest_q1_time = qualifying_info["difference_fastest_q1_time"]
                     q2 = qualifying_info["q2"]
-                    q2_ms = qualifying_info["q2_ms"]
+                    q2_sec = qualifying_info["q2_sec"]
                     fastest_q2_time = qualifying_info["fastest_q2_time"]
                     difference_fastest_q2_time = qualifying_info["difference_fastest_q2_time"]
                     q3 = qualifying_info["q3"]
-                    q3_ms = qualifying_info["q3_ms"]
+                    q3_sec = qualifying_info["q3_sec"]
                     fastest_q3_time = qualifying_info["fastest_q3_time"]
                     difference_fastest_q3_time = qualifying_info["difference_fastest_q3_time"]
                     season = qualifying_info["season"]
@@ -232,17 +230,17 @@ def main():
                                             "constructor": constructor, 
                                             "position": position,
                                             "q1": q1, 
-                                            "q1_ms": q1_ms,
+                                            "q1_sec": q1_sec,
                                             "fastest_q1_time": fastest_q1_time,
                                             "difference_fastest_q1_time": difference_fastest_q1_time,
                                             "q2": q2,
-                                            "q2_ms": q2_ms,
+                                            "q2_sec": q2_sec,
                                             "fastest_q2_time": fastest_q2_time,
                                             "difference_fastest_q2_time": difference_fastest_q2_time,
                                             "q3": q3, 
+                                            "q3_sec": q3_sec,
                                             "fastest_q3_time": fastest_q3_time,
                                             "difference_fastest_q3_time": difference_fastest_q3_time,
-                                            "q3_ms": q3_ms,
                                             "season": season,
                                             "round": round, 
                                             "race_name": race_name, 
@@ -272,7 +270,10 @@ def main():
             fastest_q1_time_array.append(q1_fastest["fastest_q1_time"])
 
         for q1_difference in selected_qualifying_info:
-            difference_fastest_q1_time_array.append(q1_difference["difference_fastest_q1_time"])
+            if q1_difference["difference_fastest_q1_time"] == 'N/A':
+                difference_fastest_q1_time_array.append(None)
+            else:
+                difference_fastest_q1_time_array.append(q1_difference["difference_fastest_q1_time"])
 
         for q2_lap_time in selected_qualifying_info:
             q2_lap_time_array.append(q2_lap_time["q2"])
@@ -281,7 +282,10 @@ def main():
             fastest_q2_time_array.append(q2_fastest["fastest_q2_time"])
 
         for q2_difference in selected_qualifying_info:
-            difference_fastest_q2_time_array.append(q2_difference["difference_fastest_q2_time"])
+            if q2_difference["difference_fastest_q2_time"] == 'N/A':
+                difference_fastest_q2_time_array.append(None)
+            else:
+                difference_fastest_q2_time_array.append(q2_difference["difference_fastest_q2_time"])
 
         for q3_lap_time in selected_qualifying_info:
             q3_lap_time_array.append(q3_lap_time["q3"])
@@ -290,7 +294,10 @@ def main():
             fastest_q3_time_array.append(q3_fastest["fastest_q3_time"])
 
         for q3_difference in selected_qualifying_info:
-            difference_fastest_q3_time_array.append(q3_difference["difference_fastest_q3_time"])
+            if q3_difference["difference_fastest_q3_time"] == 'N/A':
+                difference_fastest_q3_time_array.append(None)
+            else:
+                difference_fastest_q3_time_array.append(q3_difference["difference_fastest_q3_time"])
 
         for driver in selected_qualifying_info:
             qualifying_driver_array.append(driver["driver"])
@@ -319,7 +326,6 @@ def main():
             tooltip=['Round', 'Grand Prix', 'Driver', 'Position']
         ).interactive(
         ).properties(
-            width=1250, 
             height=600
         ).configure(
             background='#ffffff'
@@ -330,7 +336,7 @@ def main():
             fontSize=20  
         )
 
-        st.altair_chart(qualifying_chart)
+        st.altair_chart(qualifying_chart, use_container_width=True)
 
         ######### Q1 #########
 
@@ -339,7 +345,7 @@ def main():
         q1_data = pd.DataFrame(
             {
                 "Round": qualifying_round_array,
-                "Difference (ms)": difference_fastest_q1_time_array,
+                "Difference (sec)": difference_fastest_q1_time_array,
                 "Driver": qualifying_driver_array,
                 "Q1 Lap Time": q1_lap_time_array,
                 "Fastest Q1 Lap Time": fastest_q1_time_array,
@@ -349,12 +355,11 @@ def main():
 
         q1_chart = alt.Chart(q1_data).mark_line(size=5).encode(
             alt.X('Round', sort='ascending').scale(zero=False),
-            alt.Y('Difference (ms)').scale(zero=False),
+            alt.Y('Difference (sec)').scale(zero=False),
             color='Driver',
-            tooltip=['Round', 'Grand Prix', 'Driver', 'Q1 Lap Time', "Fastest Q1 Lap Time", "Difference (ms)"]
+            tooltip=['Round', 'Grand Prix', 'Driver', 'Q1 Lap Time', "Fastest Q1 Lap Time", "Difference (sec)"]
         ).interactive(
         ).properties(
-            width=1250, 
             height=600
         ).configure(
             background='#ffffff'
@@ -365,7 +370,7 @@ def main():
             fontSize=20  
         )
 
-        st.altair_chart(q1_chart)
+        st.altair_chart(q1_chart, use_container_width=True)
 
         ######### Q2 #########
 
@@ -374,7 +379,7 @@ def main():
         q2_data = pd.DataFrame(
             {
                 "Round": qualifying_round_array,
-                "Difference (ms)": difference_fastest_q2_time_array,
+                "Difference (sec)": difference_fastest_q2_time_array,
                 "Driver": qualifying_driver_array,
                 "Q2 Lap Time": q2_lap_time_array,
                 "Fastest Q2 Lap Time": fastest_q2_time_array,
@@ -384,12 +389,11 @@ def main():
 
         q2_chart = alt.Chart(q2_data).mark_line(size=5).encode(
             alt.X('Round', sort='ascending').scale(zero=False),
-            alt.Y('Difference (ms)').scale(zero=False),
+            alt.Y('Difference (sec)').scale(zero=False),
             color='Driver',
-            tooltip=['Round', 'Grand Prix', 'Driver', 'Q2 Lap Time', "Fastest Q2 Lap Time",  "Difference (ms)"]
+            tooltip=['Round', 'Grand Prix', 'Driver', 'Q2 Lap Time', "Fastest Q2 Lap Time",  "Difference (sec)"]
         ).interactive(
         ).properties(
-            width=1250, 
             height=600
         ).configure(
             background='#ffffff'
@@ -400,7 +404,7 @@ def main():
             fontSize=20  
         )
 
-        st.altair_chart(q2_chart)
+        st.altair_chart(q2_chart, use_container_width=True)
 
         ######### Q3 #########
 
@@ -409,7 +413,7 @@ def main():
         q3_data = pd.DataFrame(
             {
                 "Round": qualifying_round_array,
-                "Difference (ms)": difference_fastest_q3_time_array,
+                "Difference (sec)": difference_fastest_q3_time_array,
                 "Driver": qualifying_driver_array,
                 "Q3 Lap Time": q3_lap_time_array,
                 "Fastest Q3 Lap Time": fastest_q3_time_array,
@@ -419,12 +423,11 @@ def main():
 
         q3_chart = alt.Chart(q3_data).mark_line(size=5).encode(
             alt.X('Round', sort='ascending').scale(zero=False),
-            alt.Y('Difference (ms)').scale(zero=False),
+            alt.Y('Difference (sec)').scale(zero=False),
             color='Driver',
-            tooltip=['Round', 'Grand Prix', 'Driver', 'Q3 Lap Time', "Fastest Q3 Lap Time", "Difference (ms)"]
+            tooltip=['Round', 'Grand Prix', 'Driver', 'Q3 Lap Time', "Fastest Q3 Lap Time", "Difference (sec)"]
         ).interactive(
         ).properties(
-            width=1250, 
             height=600
         ).configure(
             background='#ffffff'
@@ -435,6 +438,6 @@ def main():
             fontSize=20  
         )
 
-        st.altair_chart(q3_chart)
+        st.altair_chart(q3_chart, use_container_width=True)
 
 main()
