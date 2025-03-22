@@ -270,10 +270,7 @@ def main():
             fastest_q1_time_array.append(q1_fastest["fastest_q1_time"])
 
         for q1_difference in selected_qualifying_info:
-            if q1_difference["difference_fastest_q1_time"] == 'N/A':
-                difference_fastest_q1_time_array.append(None)
-            else:
-                difference_fastest_q1_time_array.append(q1_difference["difference_fastest_q1_time"])
+            difference_fastest_q1_time_array.append(q1_difference["difference_fastest_q1_time"])
 
         for q2_lap_time in selected_qualifying_info:
             q2_lap_time_array.append(q2_lap_time["q2"])
@@ -282,10 +279,7 @@ def main():
             fastest_q2_time_array.append(q2_fastest["fastest_q2_time"])
 
         for q2_difference in selected_qualifying_info:
-            if q2_difference["difference_fastest_q2_time"] == 'N/A':
-                difference_fastest_q2_time_array.append(None)
-            else:
-                difference_fastest_q2_time_array.append(q2_difference["difference_fastest_q2_time"])
+            difference_fastest_q2_time_array.append(q2_difference["difference_fastest_q2_time"])
 
         for q3_lap_time in selected_qualifying_info:
             q3_lap_time_array.append(q3_lap_time["q3"])
@@ -294,10 +288,7 @@ def main():
             fastest_q3_time_array.append(q3_fastest["fastest_q3_time"])
 
         for q3_difference in selected_qualifying_info:
-            if q3_difference["difference_fastest_q3_time"] == 'N/A':
-                difference_fastest_q3_time_array.append(None)
-            else:
-                difference_fastest_q3_time_array.append(q3_difference["difference_fastest_q3_time"])
+            difference_fastest_q3_time_array.append(q3_difference["difference_fastest_q3_time"])
 
         for driver in selected_qualifying_info:
             qualifying_driver_array.append(driver["driver"])

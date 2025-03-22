@@ -1,6 +1,6 @@
 def time_to_seconds(time_str):
     try:
-        if time_str == "N/A" or time_str == "" or time_str is None:
+        if time_str == "" or time_str is None:
             return float('inf')  # Set to infinity to ensure invalid times are ignored in comparisons
 
         # Split the time by the first ':'

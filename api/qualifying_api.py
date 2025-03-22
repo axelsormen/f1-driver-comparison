@@ -26,9 +26,9 @@ def get_qualifying_data():
                 round_number = race.get('round') 
 
                 # Extract race name and circuit details
-                race_name = race.find('.//RaceName', namespace).text if race.find('.//RaceName', namespace) is not None else 'N/A'
-                circuit_name = race.find('.//CircuitName', namespace).text if race.find('.//CircuitName', namespace) is not None else 'N/A'
-                date = race.find('.//Date', namespace).text if race.find('.//Date', namespace) is not None else 'N/A'
+                race_name = race.find('.//RaceName', namespace).text if race.find('.//RaceName', namespace) is not None else None
+                circuit_name = race.find('.//CircuitName', namespace).text if race.find('.//CircuitName', namespace) is not None else None
+                date = race.find('.//Date', namespace).text if race.find('.//Date', namespace) is not None else None
 
                 # Extract qualifying results
                 qualifying_results = race.findall('.//QualifyingResult', namespace)
@@ -39,17 +39,17 @@ def get_qualifying_data():
                     driver = result.find('.//Driver', namespace)
 
                     if driver is not None:
-                        given_name = driver.find('GivenName', namespace).text if driver.find('GivenName', namespace) is not None else 'N/A'
-                        family_name = driver.find('FamilyName', namespace).text if driver.find('FamilyName', namespace) is not None else 'N/A'
+                        given_name = driver.find('GivenName', namespace).text if driver.find('GivenName', namespace) is not None else None
+                        family_name = driver.find('FamilyName', namespace).text if driver.find('FamilyName', namespace) is not None else None
 
                     constructor = result.find('.//Constructor', namespace)
                     if constructor is not None:
-                        constructor_name = constructor.find('Name', namespace).text if constructor.find('Name', namespace) is not None else 'N/A'
+                        constructor_name = constructor.find('Name', namespace).text if constructor.find('Name', namespace) is not None else None
 
                     # Extract the Q1, Q2, and Q3 times
-                    q1 = result.find('.//Q1', namespace).text if result.find('.//Q1', namespace) is not None else 'N/A'
-                    q2 = result.find('.//Q2', namespace).text if result.find('.//Q2', namespace) is not None else 'N/A'
-                    q3 = result.find('.//Q3', namespace).text if result.find('.//Q3', namespace) is not None else 'N/A'
+                    q1 = result.find('.//Q1', namespace).text if result.find('.//Q1', namespace) is not None else None
+                    q2 = result.find('.//Q2', namespace).text if result.find('.//Q2', namespace) is not None else None
+                    q3 = result.find('.//Q3', namespace).text if result.find('.//Q3', namespace) is not None else None
 
                     q1_sec = time_to_seconds(q1)
                     q2_sec = time_to_seconds(q2)
@@ -99,11 +99,11 @@ def get_qualifying_data():
         if str(round_number) in fastest_q1_dict:
             entry["fastest_q1_time"] = fastest_q1_dict[str(round_number)]["fastest_q1"] 
             if entry["q1_sec"] == float('inf'):
-                entry["difference_fastest_q1_time"] = "N/A" 
+                entry["difference_fastest_q1_time"] = None
             else:
-                entry["difference_fastest_q1_time"] = round(entry["q1_sec"] - fastest_q1_dict[str(round_number)]["q1_seconds"],3)
+                entry["difference_fastest_q1_time"] = entry["q1_sec"] - fastest_q1_dict[str(round_number)]["q1_seconds"]
         else:
-            entry["difference_fastest_q1_time"] = "N/A" 
+            entry["difference_fastest_q1_time"] = None
 
     ####### Q2 difference #######
             
@@ -127,11 +127,11 @@ def get_qualifying_data():
         if str(round_number) in fastest_q2_dict:
             entry["fastest_q2_time"] = fastest_q2_dict[str(round_number)]["fastest_q2"] 
             if entry["q2_sec"] == float('inf'):
-                entry["difference_fastest_q2_time"] = "N/A" 
+                entry["difference_fastest_q2_time"] = None
             else:
                 entry["difference_fastest_q2_time"] = entry["q2_sec"] - fastest_q2_dict[str(round_number)]["q2_seconds"]
         else:
-            entry["difference_fastest_q2_time"] = "N/A" 
+            entry["difference_fastest_q2_time"] = None
 
     ####### Q3 difference #######
             
@@ -155,10 +155,10 @@ def get_qualifying_data():
         if str(round_number) in fastest_q3_dict:
             entry["fastest_q3_time"] = fastest_q3_dict[str(round_number)]["fastest_q3"] 
             if entry["q3_sec"] == float('inf'):
-                entry["difference_fastest_q3_time"] = "N/A" 
+                entry["difference_fastest_q3_time"] = None
             else:
                 entry["difference_fastest_q3_time"] = entry["q3_sec"] - fastest_q3_dict[str(round_number)]["q3_seconds"]
         else:
-            entry["difference_fastest_q3_time"] = "N/A" 
+            entry["difference_fastest_q3_time"] = None 
 
     return qualifying_array

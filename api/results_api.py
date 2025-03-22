@@ -26,27 +26,27 @@ def get_results_data():
                 round_number = race.get('round')  
 
                 # Extract race name and circuit details
-                race_name = race.find('.//RaceName', namespace).text if race.find('.//RaceName', namespace) is not None else 'N/A'
-                circuit_name = race.find('.//CircuitName', namespace).text if race.find('.//CircuitName', namespace) is not None else 'N/A'
-                date = race.find('.//Date', namespace).text if race.find('.//Date', namespace) is not None else 'N/A'
+                race_name = race.find('.//RaceName', namespace).text if race.find('.//RaceName', namespace) is not None else None
+                circuit_name = race.find('.//CircuitName', namespace).text if race.find('.//CircuitName', namespace) is not None else None
+                date = race.find('.//Date', namespace).text if race.find('.//Date', namespace) is not None else None
 
                 # Extract results
                 results = race.findall('.//Result', namespace)
 
                 for result in results:
-                    status = result.find('Status', namespace).text if result.find('Status', namespace) is not None else 'N/A'
+                    status = result.find('Status', namespace).text if result.find('Status', namespace) is not None else None
                     position = result.get('position') 
 
                     points = float(result.get('points', 0))  # Ensure points are treated as numbers
                     driver = result.find('.//Driver', namespace)
 
                     if driver is not None:
-                        given_name = driver.find('GivenName', namespace).text if driver.find('GivenName', namespace) is not None else 'N/A'
-                        family_name = driver.find('FamilyName', namespace).text if driver.find('FamilyName', namespace) is not None else 'N/A'
+                        given_name = driver.find('GivenName', namespace).text if driver.find('GivenName', namespace) is not None else None
+                        family_name = driver.find('FamilyName', namespace).text if driver.find('FamilyName', namespace) is not None else None
 
                     constructor = result.find('.//Constructor', namespace)
                     if constructor is not None:
-                        constructor_name = constructor.find('Name', namespace).text if constructor.find('Name', namespace) is not None else 'N/A'
+                        constructor_name = constructor.find('Name', namespace).text if constructor.find('Name', namespace) is not None else None
 
                     # Update the total points for the driver
                     driver_key = f"{given_name} {family_name}"

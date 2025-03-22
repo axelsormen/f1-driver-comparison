@@ -28,13 +28,13 @@ def get_standings_data():
             driver = standing.find('.//Driver', namespace) 
 
             if driver is not None:
-                given_name = driver.find('GivenName', namespace).text if driver.find('GivenName', namespace) is not None else 'N/A'
-                family_name = driver.find('FamilyName', namespace).text if driver.find('FamilyName', namespace) is not None else 'N/A'
+                given_name = driver.find('GivenName', namespace).text if driver.find('GivenName', namespace) is not None else None
+                family_name = driver.find('FamilyName', namespace).text if driver.find('FamilyName', namespace) is not None else None
 
             constructor = standing.find('.//Constructor', namespace) 
 
             if constructor is not None:
-                constructor_name = constructor.find('Name', namespace).text if constructor.find('Name', namespace) is not None else 'N/A'
+                constructor_name = constructor.find('Name', namespace).text if constructor.find('Name', namespace) is not None else None
                 
             standings_array.append({
                 "given_name": given_name, 
