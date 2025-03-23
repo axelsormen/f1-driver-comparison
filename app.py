@@ -89,11 +89,13 @@ def main():
                             if int(results_info["round"]) == 24:
                                 podiums = results_info["total_podiums"]
                                 top10_finishes = results_info["total_top10_finishes"]
+                                fastest_laps = results_info["total_fastest_laps"]
 
                                 for driver in selected_standings_info:
                                     if driver['Driver'] == full_name:
                                         driver["Podiums"] = podiums
                                         driver["Top 10 Finishes"] = top10_finishes
+                                        driver["Fastest Laps"] = fastest_laps
 
                 selected_drivers_info_sorted = sorted(selected_standings_info, key=lambda x: int(x["Position"]))
                 df = pd.DataFrame(selected_drivers_info_sorted)
@@ -102,7 +104,7 @@ def main():
                     st.header("Standings")
                     
                     # Increase the table size by adjusting the width and height
-                    st.dataframe(df.set_index(df.columns[0]), width=700)
+                    st.dataframe(df.set_index(df.columns[0]), width=750)
 
             ######### Grand Prix #########
             if st.session_state.view_options == "Grand Prix":
@@ -124,6 +126,7 @@ def main():
                             total_wins = results_info["total_wins"]
                             total_podiums = results_info["total_podiums"]
                             total_top10_finishes = results_info["total_top10_finishes"]
+                            total_fastest_laps = results_info["total_fastest_laps"]
                             circuit_name = results_info["circuit_name"]
                             date = results_info["date"]
                             constructor = results_info["constructor_name"]
@@ -140,6 +143,7 @@ def main():
                                                     "total_wins": total_wins,
                                                     "total_podiums": total_podiums,
                                                     "total_top10_finishes": total_top10_finishes,
+                                                    "total_fastest_laps": total_fastest_laps,
                                                     "circuit_name": circuit_name,
                                                     "date": date})
                             
@@ -153,6 +157,7 @@ def main():
                 results_total_wins_array = []
                 results_total_podiums_array = []
                 results_total_top10_finishes_array = []
+                results_total_fastest_laps_array = []
                 results_array = []
 
                 for round in selected_results_info:
@@ -187,6 +192,9 @@ def main():
 
                 for total_top10_finishes in selected_results_info:
                     results_total_top10_finishes_array.append(int(total_top10_finishes["total_top10_finishes"]))
+
+                for total_fastest_laps in selected_results_info:
+                    results_total_fastest_laps_array.append(int(total_fastest_laps["total_fastest_laps"]))
                 
                 ######### GP Results #########
 
@@ -354,6 +362,39 @@ def main():
                 )
 
                 st.altair_chart(total_wins_chart, use_container_width=True)
+
+                ######### Fastest Laps Development #########
+
+                st.header("Fastest Laps Development")
+
+                total_fastest_laps_data = pd.DataFrame(
+                    {
+                        "Round": results_round_array,
+                        "Total Fastest Laps": results_total_fastest_laps_array,
+                        "Driver": results_driver_array,
+                        "Constructor": results_constructor_array,
+                        "Grand Prix": results_race_array
+                    }
+                )
+
+                total_fastest_laps_chart = alt.Chart(total_fastest_laps_data).mark_line(size=5).encode(
+                    alt.X('Round', sort='ascending').scale(zero=False),
+                    alt.Y('Total Fastest Laps').scale(zero=False),
+                    color='Driver',
+                    tooltip=['Round', 'Grand Prix', 'Driver', 'Constructor','Total Fastest Laps']
+                ).interactive(
+                ).properties(
+                    height=600
+                ).configure(
+                    background='#ffffff'
+                ).configure_axis(
+                    labelFontSize=16,
+                    titleFontSize=18 
+                ).configure_title(
+                    fontSize=20  
+                )
+
+                st.altair_chart(total_fastest_laps_chart, use_container_width=True)
 
             ######### Qualifying Results #########
             if st.session_state.view_options == "Qualifying":

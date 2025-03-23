@@ -8,6 +8,7 @@ def get_results_data():
     driver_wins = {} 
     driver_podiums = {}
     driver_top10_finishes = {}
+    driver_fastest_laps = {}
 
     # Loop through all races (for example, 24 races for the season)
     for i in range(1, 25):  # Assuming there are 24 rounds for the season
@@ -59,6 +60,16 @@ def get_results_data():
                     elif int(position) <= 10: 
                         top10_finish = 1
 
+                    fastest_lap_result = result.find('.//FastestLap', namespace)
+
+                    if fastest_lap_result is not None:
+                        fastest_lap_rank = fastest_lap_result.get('rank') 
+
+                    if int(fastest_lap_rank) == 1:
+                        fastest_lap = 1
+                    else:
+                        fastest_lap = 0
+
                     points = float(result.get('points', 0)) 
                     driver = result.find('.//Driver', namespace)
 
@@ -94,6 +105,12 @@ def get_results_data():
                         driver_top10_finishes[driver_key] = 0  
                     driver_top10_finishes[driver_key] += top10_finish  
 
+                    # Update the total fastest lap for the driver
+                    driver_key = f"{given_name} {family_name}"
+                    if driver_key not in driver_fastest_laps:
+                        driver_fastest_laps[driver_key] = 0  
+                    driver_fastest_laps[driver_key] += fastest_lap  
+
                     # Append the collected race data to the results_array with total_points
                     results_array.append({
                         "given_name": given_name,
@@ -105,6 +122,7 @@ def get_results_data():
                         "top10_finish": top10_finish,
                         "points": points,
                         "status": status,
+                        "fastest_lap_rank": fastest_lap_rank,
                         "season": season,
                         "round": round_number,
                         "race_name": race_name,
@@ -118,6 +136,7 @@ def get_results_data():
                         "total_wins": driver_wins[driver_key], 
                         "total_podiums": driver_podiums[driver_key], 
                         "total_top10_finishes": driver_top10_finishes[driver_key], 
+                        "total_fastest_laps": driver_fastest_laps[driver_key]
                     })
 
             # Parse the XML response for sprint results
