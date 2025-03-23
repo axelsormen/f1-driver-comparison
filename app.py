@@ -20,7 +20,6 @@ with open(css_path, "r") as f:
 
 st.markdown(f"{css_content}", unsafe_allow_html=True)
 
-# Display the header
 st.header("F1 Drivers Comparison 2024")
 
 ######### APIS #########
@@ -53,7 +52,6 @@ def main():
             if 'grobid_results_view_option' not in st.session_state:
                 st.session_state.grobid_results_view_option = "Standings" # Deault to Standings
 
-            # Create radio buttons to switch between views
             st.session_state.view_options = st.radio("Select View", ["Standings", "Grand Prix", "Qualifying", "Sprints"], horizontal=True, key='view_toggle', label_visibility="collapsed")
 
             ######### STANDINGS #########
@@ -75,9 +73,13 @@ def main():
                                                             "Driver": selected, 
                                                             "Constructor": constructor, 
                                                             "Points": standings_points, 
-                                                            "Wins": wins,
-                                                            "Podiums": None,
-                                                            "Top 10 Finishes": None
+                                                            "GP Wins": wins,
+                                                            "GP Podiums": None,
+                                                            "GP Top 10 Finishes": None, 
+                                                            "GP Fastest Laps": None,
+                                                            "Sprint Wins": None,
+                                                            "Sprint Podiums": None,
+                                                            "Sprint Top 10 Finishes": None
                                                             })
                             
                 for selected in selected_drivers:
@@ -85,17 +87,30 @@ def main():
                     for results_info in st.session_state.results_array:
                         full_name = f"{results_info['given_name']} {results_info['family_name']}".strip()
                         if selected == full_name:  
+                            max_round = 0
+
+                            for round in results_info:
+                                # Check for the highest round number
+                                if int(results_info["round"]) > max_round:
+                                    max_round = int(results_info["round"])
+
                             ## DRIVERS WHO DID NOT TAKE PART IN ROUND 24 GETS NONE!!
-                            if int(results_info["round"]) == 24:
+                            if int(results_info["round"]) == max_round:
                                 podiums = results_info["total_podiums"]
                                 top10_finishes = results_info["total_top10_finishes"]
                                 fastest_laps = results_info["total_fastest_laps"]
+                                sprint_wins = results_info["total_sprint_wins"]
+                                sprint_podiums = results_info["total_sprint_podiums"]
+                                sprint_top10_finishes = results_info["total_sprint_top10_finishes"]
 
                                 for driver in selected_standings_info:
                                     if driver['Driver'] == full_name:
-                                        driver["Podiums"] = podiums
-                                        driver["Top 10 Finishes"] = top10_finishes
-                                        driver["Fastest Laps"] = fastest_laps
+                                        driver["GP Podiums"] = podiums
+                                        driver["GP Top 10 Finishes"] = top10_finishes
+                                        driver["GP Fastest Laps"] = fastest_laps
+                                        driver["Sprint Wins"] = sprint_wins
+                                        driver["Sprint Podiums"] = sprint_podiums
+                                        driver["Sprint Top 10 Finishes"] = sprint_top10_finishes
 
                 selected_drivers_info_sorted = sorted(selected_standings_info, key=lambda x: int(x["Position"]))
                 df = pd.DataFrame(selected_drivers_info_sorted)
@@ -103,8 +118,7 @@ def main():
                 if selected_drivers_info_sorted:
                     st.header("Standings")
                     
-                    # Increase the table size by adjusting the width and height
-                    st.dataframe(df.set_index(df.columns[0]), width=750)
+                    st.dataframe(df.set_index(df.columns[0]), use_container_width=True)
 
             ######### Grand Prix #########
             if st.session_state.view_options == "Grand Prix":

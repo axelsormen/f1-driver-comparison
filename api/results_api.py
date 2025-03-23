@@ -9,6 +9,9 @@ def get_results_data():
     driver_podiums = {}
     driver_top10_finishes = {}
     driver_fastest_laps = {}
+    driver_sprint_wins = {}
+    driver_sprint_podiums = {}
+    driver_sprint_top10_finishes = {}
 
     # Loop through all races (for example, 24 races for the season)
     for i in range(1, 25):  # Assuming there are 24 rounds for the season
@@ -88,19 +91,16 @@ def get_results_data():
                     driver_points[driver_key] += points  
 
                     # Update the total wins for the driver
-                    driver_key = f"{given_name} {family_name}"
                     if driver_key not in driver_wins:
                         driver_wins[driver_key] = 0  
                     driver_wins[driver_key] += win  
 
                     # Update the total podiums for the driver
-                    driver_key = f"{given_name} {family_name}"
                     if driver_key not in driver_podiums:
                         driver_podiums[driver_key] = 0  
                     driver_podiums[driver_key] += podium  
 
                     # Update the total top 10 finishes for the driver
-                    driver_key = f"{given_name} {family_name}"
                     if driver_key not in driver_top10_finishes:
                         driver_top10_finishes[driver_key] = 0  
                     driver_top10_finishes[driver_key] += top10_finish  
@@ -110,6 +110,15 @@ def get_results_data():
                     if driver_key not in driver_fastest_laps:
                         driver_fastest_laps[driver_key] = 0  
                     driver_fastest_laps[driver_key] += fastest_lap  
+
+                    if driver_key not in driver_sprint_wins:
+                        driver_sprint_wins[driver_key] = 0  
+
+                    if driver_key not in driver_sprint_podiums:
+                        driver_sprint_podiums[driver_key] = 0  
+
+                    if driver_key not in driver_sprint_top10_finishes:
+                        driver_sprint_top10_finishes[driver_key] = 0  
 
                     # Append the collected race data to the results_array with total_points
                     results_array.append({
@@ -136,7 +145,10 @@ def get_results_data():
                         "total_wins": driver_wins[driver_key], 
                         "total_podiums": driver_podiums[driver_key], 
                         "total_top10_finishes": driver_top10_finishes[driver_key], 
-                        "total_fastest_laps": driver_fastest_laps[driver_key]
+                        "total_fastest_laps": driver_fastest_laps[driver_key],
+                        "total_sprint_wins": driver_sprint_wins[driver_key],
+                        "total_sprint_podiums": driver_sprint_podiums[driver_key],
+                        "total_sprint_top10_finishes": driver_sprint_top10_finishes[driver_key]
                     })
 
             # Parse the XML response for sprint results
@@ -158,6 +170,22 @@ def get_results_data():
                     sprint_status = sprint_result.find('Status', namespace).text if sprint_result.find('Status', namespace) is not None else None
                     sprint_position = sprint_result.get('position') if sprint_result.get('position') is not None else None
 
+                    sprint_win = 0
+                    sprint_podium = 0
+                    sprint_top10_finish = 0
+
+                    if int(sprint_position) == 1:
+                        sprint_win = 1
+                        sprint_podium = 1
+                        sprint_top10_finish = 1
+
+                    elif int(sprint_position) <= 3 : 
+                        sprint_podium = 1
+                        sprint_top10_finish = 1
+
+                    elif int(sprint_position) <= 10: 
+                        sprint_top10_finish = 1
+                    
                     sprint_points = float(sprint_result.get('points', 0))  # Ensure points are treated as numbers
                     driver = sprint_result.find('.//Driver', namespace)
 
@@ -171,6 +199,21 @@ def get_results_data():
                         driver_points[driver_key] = 0  # Initialize if driver not in dictionary
                     driver_points[driver_key] += sprint_points  # Add sprint points to total points
 
+                    # Update the total sprint wins for the driver
+                    if driver_key not in driver_sprint_wins:
+                        driver_sprint_wins[driver_key] = 0  
+                    driver_sprint_wins[driver_key] += sprint_win  
+
+                    # Update the total sprint podiums for the driver
+                    if driver_key not in driver_sprint_podiums:
+                        driver_sprint_podiums[driver_key] = 0  
+                    driver_sprint_podiums[driver_key] += sprint_podium  
+
+                    # Update the total sprint top 10 finishes for the driver
+                    if driver_key not in driver_sprint_top10_finishes:
+                        driver_sprint_top10_finishes[driver_key] = 0  
+                    driver_sprint_top10_finishes[driver_key] += sprint_top10_finish  
+
                     for result in results_array:
                         if result["round"] == round_number and f"{result['given_name']} {result['family_name']}" == driver_key:
                             result["sprint_position"] = sprint_position
@@ -178,9 +221,12 @@ def get_results_data():
                             result["sprint_status"] = sprint_status
                             result["sprint_date"] = sprint_date
                             result["total_points"] = driver_points[driver_key]
+                            result["total_sprint_wins"] = driver_sprint_wins[driver_key]
+                            result["total_sprint_podiums"] = driver_sprint_podiums[driver_key]
+                            result["total_sprint_top10_finishes"] = driver_sprint_top10_finishes[driver_key]
 
         else:
             print(f"Failed to retrieve data for round {i}.")
-            continue  # Continue to next round if request failed
-    
+            continue 
+
     return results_array

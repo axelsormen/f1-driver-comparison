@@ -44,6 +44,6 @@ def get_standings_data():
             })
 
     else:
-        st.error("Failed to retrieve data. Please try again later.")
-
+        print(f"Failed to retrieve driver standings.")
+    
     return standings_array
