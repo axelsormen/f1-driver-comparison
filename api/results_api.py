@@ -1,9 +1,13 @@
 import requests
+import streamlit as st
 import xml.etree.ElementTree as ET
 
 def get_results_data():
     results_array = []
-    driver_points = {}  # Dictionary to store the cumulative points for each driver
+    driver_points = {} 
+    driver_wins = {} 
+    driver_podiums = {}
+    driver_top10_finishes = {}
 
     # Loop through all races (for example, 24 races for the season)
     for i in range(1, 25):  # Assuming there are 24 rounds for the season
@@ -39,7 +43,23 @@ def get_results_data():
                     status = result.find('Status', namespace).text if result.find('Status', namespace) is not None else None
                     position = result.get('position') if result.get('position') is not None else None
 
-                    points = float(result.get('points', 0))  # Ensure points are treated as numbers
+                    win = 0
+                    podium = 0
+                    top10_finish = 0
+
+                    if int(position) == 1:
+                        win = 1
+                        podium = 1
+                        top10_finish = 1
+
+                    elif int(position) <= 3 : 
+                        podium = 1
+                        top10_finish = 1
+
+                    elif int(position) <= 10: 
+                        top10_finish = 1
+
+                    points = float(result.get('points', 0)) 
                     driver = result.find('.//Driver', namespace)
 
                     if driver is not None:
@@ -53,8 +73,26 @@ def get_results_data():
                     # Update the total points for the driver
                     driver_key = f"{given_name} {family_name}"
                     if driver_key not in driver_points:
-                        driver_points[driver_key] = 0  # Initialize if driver not in dictionary
-                    driver_points[driver_key] += points  # Add sprint points to total points
+                        driver_points[driver_key] = 0  
+                    driver_points[driver_key] += points  
+
+                    # Update the total wins for the driver
+                    driver_key = f"{given_name} {family_name}"
+                    if driver_key not in driver_wins:
+                        driver_wins[driver_key] = 0  
+                    driver_wins[driver_key] += win  
+
+                    # Update the total podiums for the driver
+                    driver_key = f"{given_name} {family_name}"
+                    if driver_key not in driver_podiums:
+                        driver_podiums[driver_key] = 0  
+                    driver_podiums[driver_key] += podium  
+
+                    # Update the total top 10 finishes for the driver
+                    driver_key = f"{given_name} {family_name}"
+                    if driver_key not in driver_top10_finishes:
+                        driver_top10_finishes[driver_key] = 0  
+                    driver_top10_finishes[driver_key] += top10_finish  
 
                     # Append the collected race data to the results_array with total_points
                     results_array.append({
@@ -62,6 +100,9 @@ def get_results_data():
                         "family_name": family_name,
                         "constructor_name": constructor_name,
                         "position": position,
+                        "win": win,
+                        "podium": podium,
+                        "top10_finish": top10_finish,
                         "points": points,
                         "status": status,
                         "season": season,
@@ -69,11 +110,14 @@ def get_results_data():
                         "race_name": race_name,
                         "circuit_name": circuit_name,
                         "date": date,
-                        "sprint_position": None,  # Initialize sprint values as None
+                        "sprint_position": None, 
                         "sprint_points": None,
                         "sprint_status": None,
                         "sprint_date": None,
-                        "total_points": driver_points[driver_key],  # Add the total points so far
+                        "total_points": driver_points[driver_key], 
+                        "total_wins": driver_wins[driver_key], 
+                        "total_podiums": driver_podiums[driver_key], 
+                        "total_top10_finishes": driver_top10_finishes[driver_key], 
                     })
 
             # Parse the XML response for sprint results

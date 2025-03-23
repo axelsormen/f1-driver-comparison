@@ -54,7 +54,7 @@ def main():
                 st.session_state.grobid_results_view_option = "Standings" # Deault to Standings
 
             # Create radio buttons to switch between views
-            st.session_state.view_options = st.radio("Select View", ["Standings", "GP Results", "Qualifying", "Sprints"], horizontal=True, key='view_toggle', label_visibility="collapsed")
+            st.session_state.view_options = st.radio("Select View", ["Standings", "Grand Prix", "Qualifying", "Sprints"], horizontal=True, key='view_toggle', label_visibility="collapsed")
 
             ######### STANDINGS #########
             if st.session_state.view_options == "Standings":
@@ -75,7 +75,25 @@ def main():
                                                             "Driver": selected, 
                                                             "Constructor": constructor, 
                                                             "Points": standings_points, 
-                                                            "Wins": wins})
+                                                            "Wins": wins,
+                                                            "Podiums": None,
+                                                            "Top 10 Finishes": None
+                                                            })
+                            
+                for selected in selected_drivers:
+                    selected = selected.strip() 
+                    for results_info in st.session_state.results_array:
+                        full_name = f"{results_info['given_name']} {results_info['family_name']}".strip()
+                        if selected == full_name:  
+                            ## DRIVERS WHO DID NOT TAKE PART IN ROUND 24 GETS NONE!!
+                            if int(results_info["round"]) == 24:
+                                podiums = results_info["total_podiums"]
+                                top10_finishes = results_info["total_top10_finishes"]
+
+                                for driver in selected_standings_info:
+                                    if driver['Driver'] == full_name:
+                                        driver["Podiums"] = podiums
+                                        driver["Top 10 Finishes"] = top10_finishes
 
                 selected_drivers_info_sorted = sorted(selected_standings_info, key=lambda x: int(x["Position"]))
                 df = pd.DataFrame(selected_drivers_info_sorted)
@@ -84,10 +102,10 @@ def main():
                     st.header("Standings")
                     
                     # Increase the table size by adjusting the width and height
-                    st.dataframe(df.set_index(df.columns[0]), width=500)
+                    st.dataframe(df.set_index(df.columns[0]), width=700)
 
-            ######### GP Results #########
-            if st.session_state.view_options == "GP Results":
+            ######### Grand Prix #########
+            if st.session_state.view_options == "Grand Prix":
 
                 selected_results_info = []
 
@@ -103,6 +121,9 @@ def main():
                             race_name = results_info["race_name"]
                             race_points = results_info["points"]
                             total_points = results_info["total_points"]
+                            total_wins = results_info["total_wins"]
+                            total_podiums = results_info["total_podiums"]
+                            total_top10_finishes = results_info["total_top10_finishes"]
                             circuit_name = results_info["circuit_name"]
                             date = results_info["date"]
                             constructor = results_info["constructor_name"]
@@ -116,6 +137,9 @@ def main():
                                                     "race_name": race_name, 
                                                     "race_points": race_points,
                                                     "total_points": total_points,
+                                                    "total_wins": total_wins,
+                                                    "total_podiums": total_podiums,
+                                                    "total_top10_finishes": total_top10_finishes,
                                                     "circuit_name": circuit_name,
                                                     "date": date})
                             
@@ -126,6 +150,9 @@ def main():
                 results_race_array = []
                 results_points_array = []
                 results_total_points_array = []
+                results_total_wins_array = []
+                results_total_podiums_array = []
+                results_total_top10_finishes_array = []
                 results_array = []
 
                 for round in selected_results_info:
@@ -151,6 +178,17 @@ def main():
 
                 for total_points in selected_results_info:
                     results_total_points_array.append(int(total_points["total_points"]))
+
+                for total_wins in selected_results_info:
+                    results_total_wins_array.append(int(total_wins["total_wins"]))
+
+                for total_podiums in selected_results_info:
+                    results_total_podiums_array.append(int(total_podiums["total_podiums"]))
+
+                for total_top10_finishes in selected_results_info:
+                    results_total_top10_finishes_array.append(int(total_top10_finishes["total_top10_finishes"]))
+                
+                ######### GP Results #########
 
                 st.header("GP Results")
 
@@ -217,6 +255,105 @@ def main():
                 )
 
                 st.altair_chart(total_points_chart, use_container_width=True)
+
+                ######### Top 10 Finishes Development #########
+
+                st.header("Top 10 Finishes Development")
+
+                total_top10_finishes_data = pd.DataFrame(
+                    {
+                        "Round": results_round_array,
+                        "Total Top 10 Finishes": results_total_top10_finishes_array,
+                        "Driver": results_driver_array,
+                        "Constructor": results_constructor_array,
+                        "Grand Prix": results_race_array
+                    }
+                )
+
+                total_top10_finishes_chart = alt.Chart(total_top10_finishes_data).mark_line(size=5).encode(
+                    alt.X('Round', sort='ascending').scale(zero=False),
+                    alt.Y('Total Top 10 Finishes').scale(zero=False),
+                    color='Driver',
+                    tooltip=['Round', 'Grand Prix', 'Driver', 'Constructor','Total Top 10 Finishes']
+                ).interactive(
+                ).properties(
+                    height=600
+                ).configure(
+                    background='#ffffff'
+                ).configure_axis(
+                    labelFontSize=16,
+                    titleFontSize=18 
+                ).configure_title(
+                    fontSize=20  
+                )
+
+                st.altair_chart(total_top10_finishes_chart, use_container_width=True)
+
+                ######### Podiums Development #########
+
+                st.header("Podiums Development")
+
+                total_podiums_data = pd.DataFrame(
+                    {
+                        "Round": results_round_array,
+                        "Total Podiums": results_total_podiums_array,
+                        "Driver": results_driver_array,
+                        "Constructor": results_constructor_array,
+                        "Grand Prix": results_race_array
+                    }
+                )
+
+                total_podiums_chart = alt.Chart(total_podiums_data).mark_line(size=5).encode(
+                    alt.X('Round', sort='ascending').scale(zero=False),
+                    alt.Y('Total Podiums').scale(zero=False),
+                    color='Driver',
+                    tooltip=['Round', 'Grand Prix', 'Driver', 'Constructor','Total Podiums']
+                ).interactive(
+                ).properties(
+                    height=600
+                ).configure(
+                    background='#ffffff'
+                ).configure_axis(
+                    labelFontSize=16,
+                    titleFontSize=18 
+                ).configure_title(
+                    fontSize=20  
+                )
+
+                st.altair_chart(total_podiums_chart, use_container_width=True)
+
+                ######### Wins Development #########
+
+                st.header("Wins Development")
+
+                total_wins_data = pd.DataFrame(
+                    {
+                        "Round": results_round_array,
+                        "Total Wins": results_total_wins_array,
+                        "Driver": results_driver_array,
+                        "Constructor": results_constructor_array,
+                        "Grand Prix": results_race_array
+                    }
+                )
+
+                total_wins_chart = alt.Chart(total_wins_data).mark_line(size=5).encode(
+                    alt.X('Round', sort='ascending').scale(zero=False),
+                    alt.Y('Total Wins').scale(zero=False),
+                    color='Driver',
+                    tooltip=['Round', 'Grand Prix', 'Driver', 'Constructor','Total Wins']
+                ).interactive(
+                ).properties(
+                    height=600
+                ).configure(
+                    background='#ffffff'
+                ).configure_axis(
+                    labelFontSize=16,
+                    titleFontSize=18 
+                ).configure_title(
+                    fontSize=20  
+                )
+
+                st.altair_chart(total_wins_chart, use_container_width=True)
 
             ######### Qualifying Results #########
             if st.session_state.view_options == "Qualifying":

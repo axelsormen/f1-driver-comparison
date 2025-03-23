@@ -3,14 +3,13 @@ import streamlit as st
 import xml.etree.ElementTree as ET
 
 def get_drivers_data():
+    drivers_array = []
+
     # API endpoint for the 2024 season
     drivers_api = "http://ergast.com/api/f1/2024/drivers"
 
     # Make the API request
     drivers_response = requests.get(drivers_api)
-
-    # Initialize the list of drivers
-    drivers_array = []
 
     # Check if the request was successful (status code 200)
     if drivers_response.status_code == 200:

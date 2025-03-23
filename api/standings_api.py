@@ -1,16 +1,14 @@
 import requests
-import streamlit as st
 import xml.etree.ElementTree as ET
 
 def get_standings_data():
+    standings_array = []
 
     # API endpoint for standings 2024 season
     standings_api = "http://ergast.com/api/f1/2024/driverStandings"
 
     # Make the API request
     standings_response = requests.get(standings_api)
-
-    standings_array = []
 
     # Check if the request was successful (status code 200)
     if standings_response.status_code == 200:
