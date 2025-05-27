@@ -1,7 +1,12 @@
 import requests
 import xml.etree.ElementTree as ET
 
+cache = {}
+
 def get_results_data(year):
+    if year in cache:
+        return cache[year]
+
     results_array = []
     driver_points = {} 
     driver_wins = {} 
@@ -12,8 +17,8 @@ def get_results_data(year):
     driver_sprint_podiums = {}
     driver_sprint_top10_finishes = {}
 
-    # Loop through all races (for example, 24 races for the season)
-    for i in range(1, 25):  # Assuming there are 24 rounds for the season
+    # Loop through all races
+    for i in range(1, 25):  # Assuming there are max 24 rounds in a season
         # API endpoints for results {year}
         results_api = f"http://ergast.com/api/f1/{year}/{i}/results"
         sprint_results_api = f"http://ergast.com/api/f1/{year}/{i}/sprint"
@@ -234,4 +239,5 @@ def get_results_data(year):
             print(f"Failed to retrieve data for round {i}.")
             continue 
 
+    cache[year] = results_array
     return results_array

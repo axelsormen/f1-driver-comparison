@@ -1,7 +1,12 @@
 import requests
 import xml.etree.ElementTree as ET
 
+cache = {}
+
 def get_standings_data(year):
+    if year in cache:
+        return cache[year]
+
     standings_array = []
 
     # API endpoint for standings {year} season
@@ -46,4 +51,5 @@ def get_standings_data(year):
     else:
         print(f"Failed to retrieve driver standings.")
     
+    cache[year] = standings_array
     return standings_array

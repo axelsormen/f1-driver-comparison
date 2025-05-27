@@ -2,7 +2,12 @@ import requests
 import streamlit as st
 import xml.etree.ElementTree as ET
 
+cache = {}
+
 def get_drivers_data(year):
+    if year in cache:
+        return cache[year]
+    
     drivers_array = []
 
     # API endpoint for the {year} season
@@ -31,4 +36,5 @@ def get_drivers_data(year):
     else:
         st.error("Failed to retrieve data. Please try again later.")
 
+    cache[year] = drivers_array
     return drivers_array

@@ -2,11 +2,16 @@ import requests
 import xml.etree.ElementTree as ET
 from functions.time_converter import time_to_seconds 
 
+cache = {}
+
 def get_qualifying_data(year):
+    if year in cache:
+        return cache[year]
+    
     qualifying_array = []
 
-    # Loop through all races (for example, 24 races for the season)
-    for i in range(1, 25):  # Assuming there are 24 rounds for the season
+    # Loop through all races
+    for i in range(1, 25):  # Assuming there are max 24 rounds in a season
         # API endpoint for qualifying {year}
         qualifying_api = f"http://ergast.com/api/f1/{year}/{i}/qualifying"
         
@@ -164,4 +169,5 @@ def get_qualifying_data(year):
         else:
             entry["difference_fastest_q3_time"] = None 
 
+    cache[year] = qualifying_array
     return qualifying_array

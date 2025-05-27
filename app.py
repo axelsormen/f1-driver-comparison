@@ -31,7 +31,7 @@ def main():
 
     years = [2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017]
 
-    st.session_state.selected_year = st.selectbox("Choose a year", years)
+    st.session_state.selected_year = st.selectbox("Select a year", years)
 
     st.session_state.drivers_array = get_drivers_data(st.session_state.selected_year)
 
@@ -45,13 +45,6 @@ def main():
 
     if selected_drivers:
         @st.fragment
-        def api():
-            st.session_state.standings_array = get_standings_data(st.session_state.selected_year)
-            st.session_state.results_array = get_results_data(st.session_state.selected_year)
-            st.session_state.qualifying_array = get_qualifying_data(st.session_state.selected_year)
-        api()
-
-        @st.fragment
         def views():
 
             if 'grobid_results_view_option' not in st.session_state:
@@ -61,6 +54,8 @@ def main():
 
             ######### STANDINGS #########
             if st.session_state.view_options == "Standings":
+                st.session_state.standings_array = get_standings_data(st.session_state.selected_year)
+                st.session_state.results_array = get_results_data(st.session_state.selected_year)
                 
                 selected_standings_info = []
 
@@ -127,6 +122,7 @@ def main():
 
             ######### Grand Prix #########
             if st.session_state.view_options == "Grand Prix":
+                st.session_state.results_array = get_results_data(st.session_state.selected_year)
 
                 selected_results_info = []
 
@@ -417,6 +413,7 @@ def main():
 
             ######### Qualifying Results #########
             if st.session_state.view_options == "Qualifying":
+                st.session_state.qualifying_array = get_qualifying_data(st.session_state.selected_year)
 
                 selected_qualifying_info = []
 
@@ -660,6 +657,8 @@ def main():
 
             ######### Sprint #########
             if st.session_state.view_options == "Sprints":
+                st.session_state.results_array = get_results_data(st.session_state.selected_year)
+
                 selected_sprint_info = []
 
                 for selected in selected_drivers:
