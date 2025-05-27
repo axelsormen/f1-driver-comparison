@@ -2,11 +2,11 @@ import requests
 import streamlit as st
 import xml.etree.ElementTree as ET
 
-def get_drivers_data():
+def get_drivers_data(year):
     drivers_array = []
 
-    # API endpoint for the 2024 season
-    drivers_api = "http://ergast.com/api/f1/2024/drivers"
+    # API endpoint for the {year} season
+    drivers_api = f"http://ergast.com/api/f1/{year}/drivers"
 
     # Make the API request
     drivers_response = requests.get(drivers_api)

@@ -1,8 +1,7 @@
 import requests
-import streamlit as st
 import xml.etree.ElementTree as ET
 
-def get_results_data():
+def get_results_data(year):
     results_array = []
     driver_points = {} 
     driver_wins = {} 
@@ -15,9 +14,9 @@ def get_results_data():
 
     # Loop through all races (for example, 24 races for the season)
     for i in range(1, 25):  # Assuming there are 24 rounds for the season
-        # API endpoints for results 2024
-        results_api = f"http://ergast.com/api/f1/2024/{i}/results"
-        sprint_results_api = f"http://ergast.com/api/f1/2024/{i}/sprint"
+        # API endpoints for results {year}
+        results_api = f"http://ergast.com/api/f1/{year}/{i}/results"
+        sprint_results_api = f"http://ergast.com/api/f1/{year}/{i}/sprint"
 
         # Make the API requests
         results_response = requests.get(results_api)
@@ -29,6 +28,9 @@ def get_results_data():
 
             # Parse the XML response for race results
             race_root = ET.fromstring(results_response.text)
+
+            if int(race_root.attrib['total']) == 0:
+                break
 
             # Extract each results data entry from the XML
             for race in race_root.findall('.//Race', namespace):  
@@ -153,6 +155,9 @@ def get_results_data():
 
             # Parse the XML response for sprint results
             sprint_root = ET.fromstring(sprint_results_response.text)
+
+            if int(sprint_root.attrib['total']) == 0:
+                continue
 
             # Extract each sprint results data entry from the XML
             for sprint in sprint_root.findall('.//Race', namespace):  

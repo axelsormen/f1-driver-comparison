@@ -2,13 +2,13 @@ import requests
 import xml.etree.ElementTree as ET
 from functions.time_converter import time_to_seconds 
 
-def get_qualifying_data():
+def get_qualifying_data(year):
     qualifying_array = []
 
     # Loop through all races (for example, 24 races for the season)
     for i in range(1, 25):  # Assuming there are 24 rounds for the season
-        # API endpoint for qualifying 2024
-        qualifying_api = f"http://ergast.com/api/f1/2024/{i}/qualifying"
+        # API endpoint for qualifying {year}
+        qualifying_api = f"http://ergast.com/api/f1/{year}/{i}/qualifying"
         
         # Make the API request
         qualifying_response = requests.get(qualifying_api)
@@ -19,6 +19,9 @@ def get_qualifying_data():
 
             # Parse the XML response
             root = ET.fromstring(qualifying_response.text)
+
+            if int(root.attrib['total']) == 0:
+                break
 
             # Extract each qualifying data entry from the XML
             for race in root.findall('.//Race', namespace):  

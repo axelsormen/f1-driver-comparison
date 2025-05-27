@@ -20,24 +20,22 @@ with open(css_path, "r") as f:
 
 st.markdown(f"{css_content}", unsafe_allow_html=True)
 
-st.header("F1 Drivers Comparison 2024")
-
-######### APIS #########
-
-@st.fragment
-def api():
-    st.session_state.drivers_array = get_drivers_data()
-    st.session_state.standings_array = get_standings_data()
-    st.session_state.results_array = get_results_data()
-    st.session_state.qualifying_array = get_qualifying_data()
-api()
+st.header("F1 Drivers Comparison")
 
 ######### MAIN #########
 
 @st.fragment
 def main():
 
-    ######### MULTISELECT #########
+    ######### SELECT YEAR #########
+
+    years = [2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017]
+
+    st.session_state.selected_year = st.selectbox("Choose a year", years)
+
+    st.session_state.drivers_array = get_drivers_data(st.session_state.selected_year)
+
+    ######### MULTISELECT DRIVERS #########
 
     selected_drivers = st.multiselect(
         'Select drivers to compare:', 
@@ -46,6 +44,13 @@ def main():
     )
 
     if selected_drivers:
+        @st.fragment
+        def api():
+            st.session_state.standings_array = get_standings_data(st.session_state.selected_year)
+            st.session_state.results_array = get_results_data(st.session_state.selected_year)
+            st.session_state.qualifying_array = get_qualifying_data(st.session_state.selected_year)
+        api()
+
         @st.fragment
         def views():
 

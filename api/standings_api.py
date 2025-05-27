@@ -1,11 +1,11 @@
 import requests
 import xml.etree.ElementTree as ET
 
-def get_standings_data():
+def get_standings_data(year):
     standings_array = []
 
-    # API endpoint for standings 2024 season
-    standings_api = "http://ergast.com/api/f1/2024/driverStandings"
+    # API endpoint for standings {year} season
+    standings_api = f"http://ergast.com/api/f1/{year}/driverStandings"
 
     # Make the API request
     standings_response = requests.get(standings_api)
