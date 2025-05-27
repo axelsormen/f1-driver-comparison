@@ -46,16 +46,25 @@ def main():
     if selected_drivers:
         @st.fragment
         def views():
+            if 'view_options' not in st.session_state:
+                st.session_state.view_options = "Standings" # Deault to Standings
 
-            if 'grobid_results_view_option' not in st.session_state:
-                st.session_state.grobid_results_view_option = "Standings" # Deault to Standings
+            if int(st.session_state.selected_year) > 2020:
+                st.session_state.view_options = st.radio("Select View", ["Standings", "Grand Prix", "Qualifying", "Sprints"], horizontal=True, key='view_toggle', label_visibility="collapsed")
+            
+            else:
+                st.session_state.view_options = st.radio("Select View", ["Standings", "Grand Prix", "Qualifying"], horizontal=True, key='view_toggle', label_visibility="collapsed")
 
-            st.session_state.view_options = st.radio("Select View", ["Standings", "Grand Prix", "Qualifying", "Sprints"], horizontal=True, key='view_toggle', label_visibility="collapsed")
-
-            ######### STANDINGS #########
+            ######### Standings #########
             if st.session_state.view_options == "Standings":
-                st.session_state.standings_array = get_standings_data(st.session_state.selected_year)
-                st.session_state.results_array = get_results_data(st.session_state.selected_year)
+                # Create a container that can be emptied
+                progress_container = st.empty()
+
+                with progress_container:
+                    with st.status(label="Fetching Standings Data... 🔄", expanded=False, state="running") as status:
+                        st.session_state.standings_array = get_standings_data(st.session_state.selected_year)
+                        st.session_state.results_array = get_results_data(st.session_state.selected_year)
+                    progress_container.empty()
                 
                 selected_standings_info = []
 
@@ -122,7 +131,13 @@ def main():
 
             ######### Grand Prix #########
             if st.session_state.view_options == "Grand Prix":
-                st.session_state.results_array = get_results_data(st.session_state.selected_year)
+                # Create a container that can be emptied
+                progress_container = st.empty()
+
+                with progress_container:
+                    with st.status(label="Fetching Grand Prix Data... 🔄", expanded=False, state="running") as status:
+                        st.session_state.results_array = get_results_data(st.session_state.selected_year)
+                    progress_container.empty()
 
                 selected_results_info = []
 
@@ -413,7 +428,13 @@ def main():
 
             ######### Qualifying Results #########
             if st.session_state.view_options == "Qualifying":
-                st.session_state.qualifying_array = get_qualifying_data(st.session_state.selected_year)
+                # Create a container that can be emptied
+                progress_container = st.empty()
+
+                with progress_container:
+                    with st.status(label="Fetching Qualifying Data... 🔄", expanded=False, state="running") as status:
+                        st.session_state.qualifying_array = get_qualifying_data(st.session_state.selected_year)
+                    progress_container.empty()
 
                 selected_qualifying_info = []
 
@@ -657,7 +678,13 @@ def main():
 
             ######### Sprint #########
             if st.session_state.view_options == "Sprints":
-                st.session_state.results_array = get_results_data(st.session_state.selected_year)
+                # Create a container that can be emptied
+                progress_container = st.empty()
+
+                with progress_container:
+                    with st.status(label="Fetching Sprints Data... 🔄", expanded=False, state="running") as status:
+                        st.session_state.results_array = get_results_data(st.session_state.selected_year)
+                    progress_container.empty()
 
                 selected_sprint_info = []
 
