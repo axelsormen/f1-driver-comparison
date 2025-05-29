@@ -1,6 +1,7 @@
 import requests
 import streamlit as st
 import xml.etree.ElementTree as ET
+import time
 
 cache = {}
 
@@ -13,9 +14,15 @@ def get_drivers_data(year):
     # API endpoint for the {year} season
     drivers_api = f"http://ergast.com/api/f1/{year}/drivers"
 
+    start_time = time.time()
+    
     # Make the API request
     drivers_response = requests.get(drivers_api)
 
+    end_time = time.time()
+    print(f"Drivers API time: {end_time - start_time:.2f} seconds")
+
+    start_time = time.time()
     # Check if the request was successful (status code 200)
     if drivers_response.status_code == 200:
         # Define the namespace for the XML
@@ -37,4 +44,8 @@ def get_drivers_data(year):
         st.error("Failed to retrieve data. Please try again later.")
 
     cache[year] = drivers_array
+    
+    end_time = time.time()
+    print(f"Handling Drivers API time: {end_time - start_time:.2f} seconds")
+   
     return drivers_array
