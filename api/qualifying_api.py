@@ -17,7 +17,7 @@ def get_qualifying_data(year):
     qualifying_array = []
     max_rounds = 24
 
-    with ThreadPoolExecutor(max_workers=8) as executor:  # 8 threads
+    with ThreadPoolExecutor(max_workers=12) as executor:  # 12 threads
         futures = [executor.submit(fetch_qualifying, year, i) for i in range(1, max_rounds + 1)]
 
         for future in as_completed(futures):
