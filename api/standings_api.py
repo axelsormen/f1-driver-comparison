@@ -1,11 +1,14 @@
 import requests
 import xml.etree.ElementTree as ET
+import time
 
 cache = {}
 
 def get_standings_data(year):
     if year in cache:
         return cache[year]
+    
+    start_time = time.time()
 
     standings_array = []
 
@@ -52,4 +55,8 @@ def get_standings_data(year):
         print(f"Failed to retrieve driver standings.")
     
     cache[year] = standings_array
+
+    end_time = time.time()
+    print(f"Standings API time: {end_time - start_time:.2f} seconds")
+
     return standings_array

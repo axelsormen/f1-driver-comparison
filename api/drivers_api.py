@@ -8,21 +8,17 @@ cache = {}
 def get_drivers_data(year):
     if year in cache:
         return cache[year]
-    
+
+    start_time = time.time()
+
     drivers_array = []
 
     # API endpoint for the {year} season
     drivers_api = f"http://ergast.com/api/f1/{year}/drivers"
 
-    start_time = time.time()
-    
     # Make the API request
     drivers_response = requests.get(drivers_api)
 
-    end_time = time.time()
-    print(f"Drivers API time: {end_time - start_time:.2f} seconds")
-
-    start_time = time.time()
     # Check if the request was successful (status code 200)
     if drivers_response.status_code == 200:
         # Define the namespace for the XML
@@ -46,6 +42,6 @@ def get_drivers_data(year):
     cache[year] = drivers_array
     
     end_time = time.time()
-    print(f"Handling Drivers API time: {end_time - start_time:.2f} seconds")
+    print(f"Drivers API time: {end_time - start_time:.2f} seconds")
    
     return drivers_array

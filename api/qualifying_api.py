@@ -2,6 +2,7 @@ import requests
 import xml.etree.ElementTree as ET
 from functions.time_converter import time_to_seconds 
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import time
 
 cache = {}
 
@@ -13,7 +14,9 @@ def fetch_qualifying(year, round_num):
 def get_qualifying_data(year):
     if year in cache:
         return cache[year]
-    
+
+    start_time = time.time()
+
     qualifying_array = []
     max_rounds = 24
 
@@ -173,4 +176,8 @@ def get_qualifying_data(year):
                 entry["difference_fastest_q3_time"] = None 
 
         cache[year] = qualifying_array
+    
+        end_time = time.time()
+        print(f"Qualifying API time: {end_time - start_time:.2f} seconds")
+        
         return qualifying_array

@@ -1,6 +1,7 @@
 import requests
 import xml.etree.ElementTree as ET
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import time
 
 cache = {}
 
@@ -17,6 +18,8 @@ def fetch_round_data(year, round_num):
 def get_results_data(year):
     if year in cache:
         return cache[year]
+    
+    start_time = time.time()
 
     results_array = []
     driver_points = {} 
@@ -39,11 +42,8 @@ def get_results_data(year):
 
         for future in as_completed(futures):
             round_number = futures[future]
-            try:
-                results_response, sprint_results_response = future.result()
-                results_by_round[round_number] = (results_response, sprint_results_response)
-            except Exception as e:
-                print(f"Error in round {round_number}: {e}")
+            results_response, sprint_results_response = future.result()
+            results_by_round[round_number] = (results_response, sprint_results_response)
 
     # Process results in round order
     namespace = {"": "http://ergast.com/mrd/1.5"}  # default XML namespace
@@ -259,4 +259,8 @@ def get_results_data(year):
             continue 
 
     cache[year] = results_array
+
+    end_time = time.time()
+    print(f"Results API time: {end_time - start_time:.2f} seconds")
+
     return results_array
