@@ -14,24 +14,19 @@ def get_drivers_data(year):
     drivers_array = []
 
     # API endpoint for the {year} season
-    drivers_api = f"http://ergast.com/api/f1/{year}/drivers"
+    drivers_url = f"https://api.jolpi.ca/ergast/f1/{year}/drivers/"
 
     # Make the API request
-    drivers_response = requests.get(drivers_api)
+    drivers_response = requests.get(drivers_url)
 
     # Check if the request was successful (status code 200)
     if drivers_response.status_code == 200:
-        # Define the namespace for the XML
-        namespace = {"": "http://ergast.com/mrd/1.5"}  # Default namespace (empty prefix)
-        
-        # Parse the XML response
-        root = ET.fromstring(drivers_response.text)
+        data = drivers_response.json()
+        drivers = data['MRData']['DriverTable']['Drivers']
 
-        # Extract each driver from the XML and get their full name
-        for driver in root.findall('.//Driver', namespace): 
-
-            given_name = driver.find('GivenName', namespace).text
-            family_name = driver.find('FamilyName', namespace).text
+        for driver in drivers:
+            given_name = driver.get('givenName')
+            family_name = driver.get('familyName')
 
             # Append the driver info to the list
             if given_name and family_name:  

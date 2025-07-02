@@ -29,7 +29,7 @@ def main():
 
     ######### SELECT YEAR #########
 
-    years = [2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010, 2009, 2008, 2007, 2006, 2005, 2004, 2003, 2002, 2001, 2000]
+    years = [2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010, 2009, 2008, 2007, 2006, 2005, 2004, 2003, 2002, 2001, 2000]
 
     st.session_state.selected_year = st.selectbox("Select a year", years)
     st.session_state.drivers_array = get_drivers_data(st.session_state.selected_year)
@@ -87,7 +87,7 @@ def main():
                                                             "GP Fastest Laps": None,
                                                             "Sprint Wins": None,
                                                             "Sprint Podiums": None,
-                                                            "Sprint Top 10 Finishes": None
+                                                            "Sprint Top 8 Finishes": None
                                                             })
                             
                 for selected in selected_drivers:
@@ -109,7 +109,7 @@ def main():
                                 fastest_laps = results_info["total_fastest_laps"]
                                 sprint_wins = results_info["total_sprint_wins"]
                                 sprint_podiums = results_info["total_sprint_podiums"]
-                                sprint_top10_finishes = results_info["total_sprint_top10_finishes"]
+                                sprint_top8_finishes = results_info["total_sprint_top8_finishes"]
 
                                 for driver in selected_standings_info:
                                     if driver['Driver'] == full_name:
@@ -118,7 +118,7 @@ def main():
                                         driver["GP Fastest Laps"] = fastest_laps
                                         driver["Sprint Wins"] = sprint_wins
                                         driver["Sprint Podiums"] = sprint_podiums
-                                        driver["Sprint Top 10 Finishes"] = sprint_top10_finishes
+                                        driver["Sprint Top 8 Finishes"] = sprint_top8_finishes
 
                 selected_drivers_info_sorted = sorted(selected_standings_info, key=lambda x: int(x["Position"]))
                 df = pd.DataFrame(selected_drivers_info_sorted)

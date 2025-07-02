@@ -1,6 +1,6 @@
 import requests
-import xml.etree.ElementTree as ET
 import time
+import streamlit as st
 
 cache = {}
 
@@ -13,46 +13,43 @@ def get_standings_data(year):
     standings_array = []
 
     # API endpoint for standings {year} season
-    standings_api = f"http://ergast.com/api/f1/{year}/driverStandings"
-
+    standings_url = f"https://api.jolpi.ca/ergast/f1/{year}/driverstandings/"
+    
     # Make the API request
-    standings_response = requests.get(standings_api)
+    standings_response = requests.get(standings_url)
 
     # Check if the request was successful (status code 200)
     if standings_response.status_code == 200:
-        namespace = {"": "http://ergast.com/mrd/1.5"}  # Default namespace for the XML
+        st.write(standings_response.text)
 
-        # Parse the XML response
-        root = ET.fromstring(standings_response.text)
+        data = standings_response.json()
+        standings = data['MRData']['StandingsTable']['StandingsLists'][0]['DriverStandings']
 
-        # Extract each driver from the XML and get their full name along with position
-        for standing in root.findall('.//DriverStanding', namespace):  
-            position = standing.get('position') 
+        for standing in standings:
+            position = standing.get('position')
             points = standing.get('points')
             wins = standing.get('wins')
-            
-            driver = standing.find('.//Driver', namespace) 
 
-            if driver is not None:
-                given_name = driver.find('GivenName', namespace).text if driver.find('GivenName', namespace) is not None else None
-                family_name = driver.find('FamilyName', namespace).text if driver.find('FamilyName', namespace) is not None else None
+            driver = standing.get('Driver', {})
+            given_name = driver.get('givenName')
+            family_name = driver.get('familyName')
 
-            constructor = standing.find('.//Constructor', namespace) 
+            constructors = standing.get('Constructors', [])
+            constructor_name = constructors[0]['name'] if constructors else None
 
-            if constructor is not None:
-                constructor_name = constructor.find('Name', namespace).text if constructor.find('Name', namespace) is not None else None
-                
             standings_array.append({
-                "given_name": given_name, 
-                "family_name": family_name, 
+                "given_name": given_name,
+                "family_name": family_name,
                 "constructor_name": constructor_name,
-                "position": position, 
-                "points": points, 
+                "position": position,
+                "points": points,
                 "wins": wins
             })
+        
+        st.write(standings_array)
 
     else:
-        print(f"Failed to retrieve driver standings.")
+        st.error("Failed to retrieve data. Please try again later.")
     
     cache[year] = standings_array
 
